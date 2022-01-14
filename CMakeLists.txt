@@ -45,6 +45,8 @@ target_include_directories(sux_rank_select INTERFACE
 add_executable(rank_select_benchmark
   ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/rank_select_benchmark.cpp)
 target_link_libraries(rank_select_benchmark
-  sdsl)
+  sdsl
+  sux_rank_select
+  poppy_rank_select)
 
 ################################################################################
