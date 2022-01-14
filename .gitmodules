@@ -1,0 +1,9 @@
+[submodule "extlib/sux"]
+	path = extlib/sux
+	url = https://github.com/pasta-toolbox-forks/sux.git
+[submodule "extlib/sdsl-lite"]
+	path = extlib/sdsl-lite
+	url = https://github.com/pasta-toolbox-forks/sdsl-lite.git
+[submodule "extlib/rankselect"]
+	path = extlib/rankselect
+	url = https://github.com/pasta-toolbox-forks/rankselect.git
