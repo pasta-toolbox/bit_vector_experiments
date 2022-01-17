@@ -24,11 +24,12 @@
 #include <random>
 #include <tlx/cmdline_parser.hpp>
 
-// #include <sux/bits/Rank9Sel.hpp>
-
-// #include <bitmap.h>
-// #include <shared.h>
-
+#include "pasta_popcount.hpp"
+#include "pasta_popcount_flat.hpp"
+#include "poppy_rank_select.hpp"
+#include "rank9_select.hpp"
+#include "simple_select.hpp"
+#include "simple_select_half.hpp"
 #include "benchmark_result.hpp"
 #include "sdsl_default.hpp"
 
@@ -62,7 +63,54 @@ public:
 
     if (filter_name_.empty() || filter_name_ == "sdsl_default") {
       auto const result =
-          run_sdsl_default(bit_size_, fill_percentage_, query_count_, gen);
+        run_sdsl_default(bit_size_, fill_percentage_, query_count_, gen);
+      std::cout << result << "\n";
+    }
+    if (filter_name_.empty() || filter_name_ == "rank9_select") {
+      auto const result =
+        run_rank9_select(bit_size_, fill_percentage_, query_count_, gen);
+      std::cout << result << "\n";
+    }
+    if (filter_name_.empty() || filter_name_ == "simple_select") {
+      {
+        auto const result =
+          run_simple_select<0>(bit_size_, fill_percentage_, query_count_, gen);
+        std::cout << result << "\n";
+      }
+      {
+        auto const result =
+          run_simple_select<1>(bit_size_, fill_percentage_, query_count_, gen);
+        std::cout << result << "\n";
+      }
+      {
+        auto const result =
+          run_simple_select<2>(bit_size_, fill_percentage_, query_count_, gen);
+        std::cout << result << "\n";
+      }
+      {
+        auto const result =
+          run_simple_select<3>(bit_size_, fill_percentage_, query_count_, gen);
+        std::cout << result << "\n";
+      }
+    }
+    if (filter_name_.empty() || filter_name_ == "simple_select_half") {
+      auto const result =
+        run_simple_select_half(bit_size_, fill_percentage_, query_count_, gen);
+      std::cout << result << "\n";
+    }
+    // if (filter_name_.empty() || filter_name_ == "poppy_rank_select") {
+    //   auto const result =
+    //     run_poppy_rank_select(bit_size_, fill_percentage_, query_count_, gen);
+    //   std::cout << result << "\n";
+    // }
+    if (filter_name_.empty() || filter_name_ == "pasta_popcount") {
+      auto const result =
+        run_pasta_popcount(bit_size_, fill_percentage_, query_count_, gen);
+      std::cout << result << "\n";
+    }
+    if (filter_name_.empty() || filter_name_ == "pasta_popcount_flat") {
+      auto const result =
+        run_pasta_popcount_flat(bit_size_, fill_percentage_, query_count_, gen);
       std::cout << result << "\n";
     }
   }

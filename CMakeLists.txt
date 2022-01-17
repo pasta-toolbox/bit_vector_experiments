@@ -40,6 +40,12 @@ endif()
 
 # Add pasta::utils subdirectory only, if it has not been added by another
 # project already
+if (NOT TARGET pasta_bit_vector)
+  add_subdirectory(extlib/bit_vector)
+endif()
+
+# Add pasta::utils subdirectory only, if it has not been added by another
+# project already
 if (NOT TARGET pasta_utils)
   add_subdirectory(extlib/utils)
 endif()
@@ -67,6 +73,7 @@ target_link_libraries(rank_select_benchmark
   sux_rank_select
   poppy_rank_select
   tlx
+  pasta_bit_vector
   pasta_utils
   pasta_memory_monitor)
 

@@ -22,20 +22,16 @@
 #pragma once
 
 struct BenchmarkResult {
-  std::string algo_name;
-  size_t bit_size;
-  size_t fill_percentage;
-  size_t rank_select_construction_time;
-  size_t rank_select_construction_memory_peak;
-  size_t rank0_query_count;
-  size_t rank0_query_time;
-  size_t rank1_query_count;
-  size_t rank1_query_time;
-  size_t select0_query_count;
-  size_t select0_query_time;
-  size_t select1_query_count;
-  size_t select1_query_time;
-  size_t rank_select_query_memory_peak;
+  std::string algo_name = "";
+  size_t bit_size = 0;
+  size_t fill_percentage = 0;
+  size_t rank_select_construction_time = 0;
+  size_t rank_select_construction_memory_peak = 0;
+  size_t rank1_query_count = 0;
+  size_t rank1_query_time = 0;
+  size_t select1_query_count = 0;
+  size_t select1_query_time = 0;
+  size_t rank_select_query_memory_peak = 0;
 };
 
 std::ostream& operator<<(std::ostream& os, BenchmarkResult const& br) {
@@ -44,12 +40,8 @@ std::ostream& operator<<(std::ostream& os, BenchmarkResult const& br) {
      << " fill_percentage=" << br.fill_percentage
      << " rank_select_construction_time=" << br.rank_select_construction_time
      << " rank_select_memory_peak=" << br.rank_select_construction_memory_peak
-     << " rank0_query_count=" << br.rank0_query_count
-     << " rank0_query_time=" << br.rank0_query_time
      << " rank1_query_count=" << br.rank1_query_count
      << " rank1_query_time=" << br.rank1_query_time
-     << " select0_query_count=" << br.select0_query_count
-     << " select0_query_time=" << br.select0_query_time
      << " select1_query_count=" << br.select1_query_count
      << " select1_query_time=" << br.select1_query_time
      << " rank_select_query_memory_peak=" << br.rank_select_query_memory_peak;
