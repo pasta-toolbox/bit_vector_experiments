@@ -7,3 +7,9 @@
 [submodule "extlib/rankselect"]
 	path = extlib/rankselect
 	url = https://github.com/pasta-toolbox-forks/rankselect.git
+[submodule "extlib/tlx"]
+	path = extlib/tlx
+	url = https://github.com/pasta-toolbox-forks/tlx.git
+[submodule "extlib/utils"]
+	path = extlib/utils
+	url = git@github.com:pasta-toolbox/utils.git

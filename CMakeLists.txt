@@ -26,6 +26,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(pasta_bit_vector_experiments)
 
+# Compiler flags for used in experiments, i.e., -03, -march=native, and -DNDEBUG
+set(CMAKE_CXX_FLAGS
+  "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fdiagnostics-color=auto")
+set(CMAKE_CXX_FLAGS_RELEASE
+  "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native -DNDEBUG")
+
+# tlx is used for its utility functionality. Add tlx subdirectory only,
+# if it has not been added by another project already
+if(NOT TARGET tlx)
+  add_subdirectory(extlib/tlx)
+endif()
+
+# Add pasta::utils subdirectory only, if it has not been added by another
+# project already
+if (NOT TARGET pasta_utils)
+  add_subdirectory(extlib/utils)
+endif()
+
 # Add the Succinct Data Structure Library (SDSL) to the benchmark.
 if(NOT TARGET sdsl)
   add_subdirectory(extlib/sdsl-lite)
@@ -47,6 +65,9 @@ add_executable(rank_select_benchmark
 target_link_libraries(rank_select_benchmark
   sdsl
   sux_rank_select
-  poppy_rank_select)
+  poppy_rank_select
+  tlx
+  pasta_utils
+  pasta_memory_monitor)
 
 ################################################################################
