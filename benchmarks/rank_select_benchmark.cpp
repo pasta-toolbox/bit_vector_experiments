@@ -19,19 +19,19 @@
  *
  ******************************************************************************/
 
-#include <array>
-#include <iostream>
-#include <random>
-#include <tlx/cmdline_parser.hpp>
-
+#include "benchmark_result.hpp"
 #include "pasta_popcount.hpp"
 #include "pasta_popcount_flat.hpp"
 #include "poppy_rank_select.hpp"
 #include "rank9_select.hpp"
+#include "sdsl_default.hpp"
 #include "simple_select.hpp"
 #include "simple_select_half.hpp"
-#include "benchmark_result.hpp"
-#include "sdsl_default.hpp"
+
+#include <array>
+#include <iostream>
+#include <random>
+#include <tlx/cmdline_parser.hpp>
 
 // void run() {
 //   sdsl::bit_vector bv(10000, 0);
@@ -58,59 +58,156 @@ public:
   std::string filter_name_ = "";
 
   void run_benchmark_configuration() {
+    // Prepare benchmark setup (just once, to speed everything up
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    if (filter_name_.empty() || filter_name_ == "sdsl_default") {
-      auto const result =
-        run_sdsl_default(bit_size_, fill_percentage_, query_count_, gen);
-      std::cout << result << "\n";
+    // Special setup for sdsl rank and select data structures, as they
+    // require a different bit vector.
+    if (filter_name_.empty() ||
+        (filter_name_.find("sdsl") != std::string::npos)) {
+      run_sdsl_benchmarks(gen);
     }
+    if (filter_name_.empty() ||
+        (filter_name_.find("sdsl") == std::string::npos)) {
+      run_non_sdsl_benchmarks(gen);
+    }
+  }
+
+private:
+  void run_non_sdsl_benchmarks(std::mt19937 randomness) const {
+    size_t one_bits = 0;
+    pasta::BitVector bv(bit_size_, 0);
+    std::uniform_int_distribution<> bit_dist(0, 99);
+    for (size_t i = 0; i < bit_size_; ++i) {
+      bool const flip_bit =
+          (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage_);
+      one_bits += flip_bit ? 1 : 0;
+      bv[i] = flip_bit;
+    }
+
+    std::uniform_int_distribution<> rank_dist(0, bit_size_ - 1);
+    std::vector<size_t> rank_positions(query_count_);
+
+    tlx::Aggregate<size_t> rank_query_properties;
+    for (auto& pos : rank_positions) {
+      pos = rank_dist(randomness);
+      rank_query_properties.add(pos);
+    }
+
+    std::vector<size_t> select1_positions(query_count_);
+    std::uniform_int_distribution<> select1_dist(1, one_bits);
+
+    tlx::Aggregate<size_t> select1_query_properties;
+    for (auto& pos : select1_positions) {
+      pos = select1_dist(randomness);
+      select1_query_properties.add(pos);
+    }
+
     if (filter_name_.empty() || filter_name_ == "rank9_select") {
-      auto const result =
-        run_rank9_select(bit_size_, fill_percentage_, query_count_, gen);
+      auto const result = run_rank9_select(bit_size_,
+                                           fill_percentage_,
+                                           bv,
+                                           rank_positions,
+                                           select1_positions);
       std::cout << result << "\n";
     }
     if (filter_name_.empty() || filter_name_ == "simple_select") {
       {
-        auto const result =
-          run_simple_select<0>(bit_size_, fill_percentage_, query_count_, gen);
+        auto const result = run_simple_select<0>(bit_size_,
+                                                 fill_percentage_,
+                                                 bv,
+                                                 select1_positions);
         std::cout << result << "\n";
       }
       {
-        auto const result =
-          run_simple_select<1>(bit_size_, fill_percentage_, query_count_, gen);
+        auto const result = run_simple_select<1>(bit_size_,
+                                                 fill_percentage_,
+                                                 bv,
+                                                 select1_positions);
         std::cout << result << "\n";
       }
       {
-        auto const result =
-          run_simple_select<2>(bit_size_, fill_percentage_, query_count_, gen);
+        auto const result = run_simple_select<2>(bit_size_,
+                                                 fill_percentage_,
+                                                 bv,
+                                                 select1_positions);
         std::cout << result << "\n";
       }
       {
-        auto const result =
-          run_simple_select<3>(bit_size_, fill_percentage_, query_count_, gen);
+        auto const result = run_simple_select<3>(bit_size_,
+                                                 fill_percentage_,
+                                                 bv,
+                                                 select1_positions);
         std::cout << result << "\n";
       }
     }
     if (filter_name_.empty() || filter_name_ == "simple_select_half") {
-      auto const result =
-        run_simple_select_half(bit_size_, fill_percentage_, query_count_, gen);
+      auto const result = run_simple_select_half(bit_size_,
+                                                 fill_percentage_,
+                                                 bv,
+                                                 select1_positions);
       std::cout << result << "\n";
     }
     // if (filter_name_.empty() || filter_name_ == "poppy_rank_select") {
     //   auto const result =
-    //     run_poppy_rank_select(bit_size_, fill_percentage_, query_count_, gen);
+    //     run_poppy_rank_select(bit_size_, fill_percentage_, query_count_,
+    //     gen);
     //   std::cout << result << "\n";
     // }
     if (filter_name_.empty() || filter_name_ == "pasta_popcount") {
-      auto const result =
-        run_pasta_popcount(bit_size_, fill_percentage_, query_count_, gen);
+      auto const result = run_pasta_popcount(bit_size_,
+                                             fill_percentage_,
+                                             bv,
+                                             rank_positions,
+                                             select1_positions);
       std::cout << result << "\n";
     }
     if (filter_name_.empty() || filter_name_ == "pasta_popcount_flat") {
-      auto const result =
-        run_pasta_popcount_flat(bit_size_, fill_percentage_, query_count_, gen);
+      auto const result = run_pasta_popcount_flat(bit_size_,
+                                                  fill_percentage_,
+                                                  bv,
+                                                  rank_positions,
+                                                  select1_positions);
+      std::cout << result << "\n";
+    }
+  }
+
+  void run_sdsl_benchmarks(std::mt19937 randomness) const {
+    size_t one_bits = 0;
+    sdsl::bit_vector bv(bit_size_, 0);
+    std::uniform_int_distribution<> bit_dist(0, 99);
+    for (size_t i = 0; i < bit_size_; ++i) {
+      bool const flip_bit =
+          (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage_);
+      one_bits += flip_bit ? 1 : 0;
+      bv[i] = flip_bit;
+    }
+
+    std::uniform_int_distribution<> rank_dist(0, bit_size_ - 1);
+    std::vector<size_t> rank_positions(query_count_);
+
+    tlx::Aggregate<size_t> rank_query_properties;
+    for (auto& pos : rank_positions) {
+      pos = rank_dist(randomness);
+      rank_query_properties.add(pos);
+    }
+
+    std::vector<size_t> select1_positions(query_count_);
+    std::uniform_int_distribution<> select1_dist(1, one_bits);
+
+    tlx::Aggregate<size_t> select1_query_properties;
+    for (auto& pos : select1_positions) {
+      pos = select1_dist(randomness);
+      select1_query_properties.add(pos);
+    }
+
+    if (filter_name_.empty() || filter_name_ == "sdsl_default") {
+      auto const result = run_sdsl_default(bit_size_,
+                                           fill_percentage_,
+                                           bv,
+                                           rank_positions,
+                                           select1_positions);
       std::cout << result << "\n";
     }
   }

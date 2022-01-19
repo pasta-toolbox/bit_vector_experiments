@@ -28,27 +28,20 @@
 #include "utils/memory_monitor.hpp"
 #include "utils/timer.hpp"
 
-#include <random>
-#include <sux/bits/Rank9Sel.hpp>
-#include <tlx/math/aggregate.hpp>
-
 BenchmarkResult run_pasta_popcount(size_t const bit_size,
                                    size_t const fill_percentage,
-                                   size_t const query_count,
-                                   std::mt19937 randomness) {
+                                   pasta::BitVector const& bv,
+                                   std::vector<size_t> const& rank_positions,
+                                   std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
   result.algo_name = "pasta-popcount";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
+  result.rank1_query_count = rank_positions.size();
+  result.select1_query_count = select1_positions.size();
   
-  pasta::BitVector bv(bit_size, 0);
-  std::uniform_int_distribution<> bit_dist(0, 99);
-  for (size_t i = 0; i < bit_size; ++i) {
-    bv[i] = (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage);
-  }
   pasta::Timer timer;
   pasta::MemoryMonitor& mem_monitor = pasta::MemoryMonitor::instance();
-
   timer.reset();
   mem_monitor.reset();
 
@@ -58,32 +51,6 @@ BenchmarkResult run_pasta_popcount(size_t const bit_size,
   auto const rs_mem_peak = mem_monitor.get_and_reset();
   result.rank_select_construction_memory_peak = rs_mem_peak.cur_peak;
   timer.reset();
-
-  std::uniform_int_distribution<> rank_dist(0, bit_size - 1);
-  std::vector<size_t> rank_positions(query_count);
-
-  tlx::Aggregate<size_t> rank_query_properties;
-  for (auto& pos : rank_positions) {
-    pos = rank_dist(randomness);
-    rank_query_properties.add(pos);
-  }
-
-  size_t const one_bits = rs.rank1(bit_size);
-
-  std::vector<size_t> select1_positions(query_count);
-  std::uniform_int_distribution<> select1_dist(1, one_bits);
-
-  tlx::Aggregate<size_t> select1_query_properties;
-  for (auto& pos : select1_positions) {
-    pos = select1_dist(randomness);
-    select1_query_properties.add(pos);
-  }
-
-  result.rank1_query_count = rank_positions.size();
-  result.select1_query_count = select1_positions.size();
-
-  timer.reset();
-  mem_monitor.reset();
 
   for (size_t i = 0; i < rank_positions.size(); ++i) {
     [[maybe_unused]] size_t const result = rs.rank1(rank_positions[i]);

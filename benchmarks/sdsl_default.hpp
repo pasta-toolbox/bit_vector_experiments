@@ -26,24 +26,19 @@
 #include "utils/memory_monitor.hpp"
 #include "utils/timer.hpp"
 
-#include <random>
 #include <sdsl/bit_vectors.hpp>
-#include <tlx/math/aggregate.hpp>
 
 BenchmarkResult run_sdsl_default(size_t const bit_size,
                                  size_t const fill_percentage,
-                                 size_t const query_count,
-                                 std::mt19937 randomness) {
+                                 sdsl::bit_vector const bv,
+                                 std::vector<size_t> const& rank_positions,
+                                 std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
   result.algo_name = "sdsl-defaul-algorithm";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
-
-  sdsl::bit_vector bv(bit_size, 0);
-  std::uniform_int_distribution<> bit_dist(0, 99);
-  for (size_t i = 0; i < bit_size; ++i) {
-    bv[i] = (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage);
-  }
+  result.rank1_query_count = rank_positions.size();
+  result.select1_query_count = select1_positions.size();
 
   pasta::Timer timer;
   pasta::MemoryMonitor& mem_monitor = pasta::MemoryMonitor::instance();
@@ -58,32 +53,6 @@ BenchmarkResult run_sdsl_default(size_t const bit_size,
   auto const rs_mem_peak = mem_monitor.get_and_reset();
   result.rank_select_construction_memory_peak = rs_mem_peak.cur_peak;
   timer.reset();
-
-  std::uniform_int_distribution<> rank_dist(0, bit_size - 1);
-  std::vector<size_t> rank_positions(query_count);
-
-  tlx::Aggregate<size_t> rank_query_properties;
-  for (auto& pos : rank_positions) {
-    pos = rank_dist(randomness);
-    rank_query_properties.add(pos);
-  }
-
-  size_t const one_bits = bvr1.rank(bit_size);
-
-  std::vector<size_t> select1_positions(query_count);
-  std::uniform_int_distribution<> select1_dist(1, one_bits);
-
-  tlx::Aggregate<size_t> select1_query_properties;
-  for (auto& pos : select1_positions) {
-    pos = select1_dist(randomness);
-    select1_query_properties.add(pos);
-  }
-
-  result.rank1_query_count = rank_positions.size();
-  result.select1_query_count = select1_positions.size();
-
-  timer.reset();
-  mem_monitor.reset();
 
   for (size_t i = 0; i < rank_positions.size(); ++i) {
     [[maybe_unused]] size_t const result = bvr1.rank(rank_positions[i]);
