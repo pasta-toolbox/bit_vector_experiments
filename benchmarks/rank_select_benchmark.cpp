@@ -30,25 +30,10 @@
 
 #include <array>
 #include <iostream>
+#include <ostream>
 #include <random>
 #include <tlx/cmdline_parser.hpp>
-
-// void run() {
-//   sdsl::bit_vector bv(10000, 0);
-
-//   sdsl::bit_vector::select_0_type bvs0(&bv);
-//   sdsl::bit_vector::select_1_type bvs1(&bv);
-
-//   sdsl::bit_vector::rank_0_type bvr0(&bv);
-//   sdsl::bit_vector::rank_1_type bvr1(&bv);
-
-//   std::array<uint64_t, 10000000/64> array;
-
-//   sux::bits::Rank9Sel rs(array.data(), array.size() * 64);
-
-//   BitmapPoppy bitmap(array.data(), array.size() * 64);
-
-// }
+#include <tlx/math/aggregate.hpp>
 
 class RankAndSelectBenchmark {
 public:
@@ -57,7 +42,7 @@ public:
   size_t query_count_ = 10'000;
   std::string filter_name_ = "";
 
-  void run_benchmark_configuration() {
+  void run_benchmark_configuration() const {
     // Prepare benchmark setup (just once, to speed everything up
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -149,12 +134,14 @@ private:
                                                  select1_positions);
       std::cout << result << "\n";
     }
-    // if (filter_name_.empty() || filter_name_ == "poppy_rank_select") {
-    //   auto const result =
-    //     run_poppy_rank_select(bit_size_, fill_percentage_, query_count_,
-    //     gen);
-    //   std::cout << result << "\n";
-    // }
+    if (filter_name_.empty() || filter_name_ == "poppy_rank_select") {
+      auto const result = run_poppy_rank_select(bit_size_,
+                                                fill_percentage_,
+                                                bv,
+                                                rank_positions,
+                                                select1_positions);
+      std::cout << result << "\n";
+    }
     if (filter_name_.empty() || filter_name_ == "pasta_popcount") {
       auto const result = run_pasta_popcount(bit_size_,
                                              fill_percentage_,

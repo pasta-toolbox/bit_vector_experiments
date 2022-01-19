@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <ostream>
+
 struct BenchmarkResult {
   std::string algo_name = "";
   size_t bit_size = 0;
