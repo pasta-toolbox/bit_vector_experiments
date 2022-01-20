@@ -30,6 +30,8 @@
 #include "simple_select_half.hpp"
 
 #include <array>
+#include <chrono>
+#include <thread>
 #include <iostream>
 #include <ostream>
 #include <random>
@@ -62,6 +64,8 @@ public:
 
 private:
   void run_non_sdsl_benchmarks(std::mt19937 randomness) const {
+    using namespace std::chrono_literals;
+
     size_t one_bits = 0;
     pasta::BitVector bv(bit_size_, 0);
     std::uniform_int_distribution<size_t> bit_dist(0, 99);
@@ -102,6 +106,7 @@ private:
               << select1_query_properties.min() << ", max rank: "
               << select1_query_properties.max() << ", avg rank:"
               << select1_query_properties.avg() << ")" << std::endl;
+    std::this_thread::sleep_for(5s);
     
     if (filter_name_.empty() || filter_name_ == "rank9_select") {
       auto const result = run_rank9_select(bit_size_,
@@ -118,6 +123,7 @@ private:
                                                  bv,
                                                  select1_positions);
         std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
       }
       {
         auto const result = run_simple_select<1>(bit_size_,
@@ -125,6 +131,7 @@ private:
                                                  bv,
                                                  select1_positions);
         std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
       }
       {
         auto const result = run_simple_select<2>(bit_size_,
@@ -132,6 +139,7 @@ private:
                                                  bv,
                                                  select1_positions);
         std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
       }
       {
         auto const result = run_simple_select<3>(bit_size_,
@@ -139,6 +147,7 @@ private:
                                                  bv,
                                                  select1_positions);
         std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
       }
     }
     if (filter_name_.empty() || filter_name_ == "simple_select_half") {
@@ -147,6 +156,7 @@ private:
                                                  bv,
                                                  select1_positions);
       std::cout << result << std::endl;
+      std::this_thread::sleep_for(5s);
     }
     if (filter_name_.empty() || filter_name_ == "poppy_rank_select") {
       auto const result = run_poppy_rank_select(bit_size_,
@@ -155,6 +165,7 @@ private:
                                                 rank_positions,
                                                 select1_positions);
       std::cout << result << std::endl;
+      std::this_thread::sleep_for(5s);
     }
     if (filter_name_.empty() || filter_name_ == "pasta_popcount") {
       auto const result = run_pasta_popcount(bit_size_,
@@ -163,6 +174,7 @@ private:
                                              rank_positions,
                                              select1_positions);
       std::cout << result << std::endl;
+      std::this_thread::sleep_for(5s);
     }
     if (filter_name_.empty() || filter_name_ == "pasta_popcount_flat") {
       {
@@ -174,6 +186,7 @@ private:
                                                     rank_positions,
                                                     select1_positions);
         std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
       }
       {
         auto const result =
@@ -185,6 +198,7 @@ private:
                                                     rank_positions,
                                                     select1_positions);
         std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
       }
       {
         auto const result =
@@ -195,11 +209,14 @@ private:
                                                     rank_positions,
                                                     select1_positions);
         std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
       }
     }
   }
 
   void run_sdsl_benchmarks(std::mt19937 randomness) const {
+    using namespace std::chrono_literals;
+
     size_t one_bits = 0;
     sdsl::bit_vector bv(bit_size_, 0);
     std::uniform_int_distribution<size_t> bit_dist(0, 99);
@@ -242,6 +259,8 @@ private:
               << select1_query_properties.max() << ", avg rank:"
               << select1_query_properties.avg() << ")" << std::endl;
 
+    std::this_thread::sleep_for(5s);
+
     if (filter_name_.empty() || filter_name_ == "sdsl_default") {
       auto const result = run_sdsl_default(bit_size_,
                                            fill_percentage_,
@@ -249,6 +268,7 @@ private:
                                            rank_positions,
                                            select1_positions);
       std::cout << result << std::endl;
+      std::this_thread::sleep_for(5s);
     }
     if (filter_name_.empty() || filter_name_ == "sdsl_v5") {
       auto const result = run_sdsl_with_v5(bit_size_,
@@ -257,6 +277,7 @@ private:
                                            rank_positions,
                                            select1_positions);
       std::cout << result << std::endl;
+      std::this_thread::sleep_for(5s);
     }
   }
 };
