@@ -71,6 +71,9 @@ private:
       bv[i] = flip_bit;
     }
 
+    std::cout << "Finished flipping bits in bit vector (" << one_bits
+              << ") bits flipped" << std::endl;
+
     std::uniform_int_distribution<> rank_dist(0, bit_size_ - 1);
     std::vector<size_t> rank_positions(query_count_);
 
@@ -80,6 +83,11 @@ private:
       rank_query_properties.add(pos);
     }
 
+    std::cout << "Finished creating rank query positions (min pos: "
+              << rank_query_properties.min() << ", max pos: "
+              << rank_query_properties.max() << ", avg pos:"
+              << rank_query_properties.avg() << ")" << std::endl;
+    
     std::vector<size_t> select1_positions(query_count_);
     std::uniform_int_distribution<> select1_dist(1, one_bits);
 
@@ -89,13 +97,18 @@ private:
       select1_query_properties.add(pos);
     }
 
+    std::cout << "Finished creating select query ranks (min rank: "
+              << select1_query_properties.min() << ", max rank: "
+              << select1_query_properties.max() << ", avg rank:"
+              << select1_query_properties.avg() << ")" << std::endl;
+    
     if (filter_name_.empty() || filter_name_ == "rank9_select") {
       auto const result = run_rank9_select(bit_size_,
                                            fill_percentage_,
                                            bv,
                                            rank_positions,
                                            select1_positions);
-      std::cout << result << "\n";
+      std::cout << result << std::endl;
     }
     if (filter_name_.empty() || filter_name_ == "simple_select") {
       {
@@ -103,28 +116,28 @@ private:
                                                  fill_percentage_,
                                                  bv,
                                                  select1_positions);
-        std::cout << result << "\n";
+        std::cout << result << std::endl;
       }
       {
         auto const result = run_simple_select<1>(bit_size_,
                                                  fill_percentage_,
                                                  bv,
                                                  select1_positions);
-        std::cout << result << "\n";
+        std::cout << result << std::endl;
       }
       {
         auto const result = run_simple_select<2>(bit_size_,
                                                  fill_percentage_,
                                                  bv,
                                                  select1_positions);
-        std::cout << result << "\n";
+        std::cout << result << std::endl;
       }
       {
         auto const result = run_simple_select<3>(bit_size_,
                                                  fill_percentage_,
                                                  bv,
                                                  select1_positions);
-        std::cout << result << "\n";
+        std::cout << result << std::endl;
       }
     }
     if (filter_name_.empty() || filter_name_ == "simple_select_half") {
@@ -132,7 +145,7 @@ private:
                                                  fill_percentage_,
                                                  bv,
                                                  select1_positions);
-      std::cout << result << "\n";
+      std::cout << result << std::endl;
     }
     if (filter_name_.empty() || filter_name_ == "poppy_rank_select") {
       auto const result = run_poppy_rank_select(bit_size_,
@@ -140,7 +153,7 @@ private:
                                                 bv,
                                                 rank_positions,
                                                 select1_positions);
-      std::cout << result << "\n";
+      std::cout << result << std::endl;
     }
     if (filter_name_.empty() || filter_name_ == "pasta_popcount") {
       auto const result = run_pasta_popcount(bit_size_,
@@ -148,7 +161,7 @@ private:
                                              bv,
                                              rank_positions,
                                              select1_positions);
-      std::cout << result << "\n";
+      std::cout << result << std::endl;
     }
     if (filter_name_.empty() || filter_name_ == "pasta_popcount_flat") {
       auto const result = run_pasta_popcount_flat(bit_size_,
@@ -156,7 +169,7 @@ private:
                                                   bv,
                                                   rank_positions,
                                                   select1_positions);
-      std::cout << result << "\n";
+      std::cout << result << std::endl;
     }
   }
 
@@ -171,6 +184,10 @@ private:
       bv[i] = flip_bit;
     }
 
+    std::cout << "Finished flipping bits in bit vector (" << one_bits
+              << ") bits flipped" << std::endl;
+
+
     std::uniform_int_distribution<> rank_dist(0, bit_size_ - 1);
     std::vector<size_t> rank_positions(query_count_);
 
@@ -180,6 +197,11 @@ private:
       rank_query_properties.add(pos);
     }
 
+    std::cout << "Finished creating rank query positions (min pos: "
+              << rank_query_properties.min() << ", max pos: "
+              << rank_query_properties.max() << ", avg pos:"
+              << rank_query_properties.avg() << ")" << std::endl;
+    
     std::vector<size_t> select1_positions(query_count_);
     std::uniform_int_distribution<> select1_dist(1, one_bits);
 
@@ -189,13 +211,18 @@ private:
       select1_query_properties.add(pos);
     }
 
+    std::cout << "Finished creating select query ranks (min rank: "
+              << select1_query_properties.min() << ", max rank: "
+              << select1_query_properties.max() << ", avg rank:"
+              << select1_query_properties.avg() << ")" << std::endl;
+
     if (filter_name_.empty() || filter_name_ == "sdsl_default") {
       auto const result = run_sdsl_default(bit_size_,
                                            fill_percentage_,
                                            bv,
                                            rank_positions,
                                            select1_positions);
-      std::cout << result << "\n";
+      std::cout << result << std::endl;
     }
   }
 };
