@@ -25,6 +25,7 @@
 #include "poppy_rank_select.hpp"
 #include "rank9_select.hpp"
 #include "sdsl_default.hpp"
+#include "sdsl_with_v5.hpp"
 #include "simple_select.hpp"
 #include "simple_select_half.hpp"
 
@@ -72,7 +73,7 @@ private:
     }
 
     std::cout << "Finished flipping bits in bit vector (" << one_bits
-              << ") bits flipped" << std::endl;
+              << " bits flipped)" << std::endl;
 
     std::uniform_int_distribution<> rank_dist(0, bit_size_ - 1);
     std::vector<size_t> rank_positions(query_count_);
@@ -164,12 +165,37 @@ private:
       std::cout << result << std::endl;
     }
     if (filter_name_.empty() || filter_name_ == "pasta_popcount_flat") {
-      auto const result = run_pasta_popcount_flat(bit_size_,
-                                                  fill_percentage_,
-                                                  bv,
-                                                  rank_positions,
-                                                  select1_positions);
-      std::cout << result << std::endl;
+      {
+        auto const result =
+          run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
+                                  pasta::FindL2FlatWith::LINEAR_SEARCH>(bit_size_,
+                                                                        fill_percentage_,
+                                                    bv,
+                                                    rank_positions,
+                                                    select1_positions);
+        std::cout << result << std::endl;
+      }
+      {
+        auto const result =
+                    run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
+                                  pasta::FindL2FlatWith::BINARY_SEARCH>(
+                                                                        bit_size_,
+                                                    fill_percentage_,
+                                                    bv,
+                                                    rank_positions,
+                                                    select1_positions);
+        std::cout << result << std::endl;
+      }
+      {
+        auto const result =
+          run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
+                                  pasta::FindL2FlatWith::INTRINSICS>(bit_size_,
+                                                    fill_percentage_,
+                                                    bv,
+                                                    rank_positions,
+                                                    select1_positions);
+        std::cout << result << std::endl;
+      }
     }
   }
 
@@ -218,6 +244,14 @@ private:
 
     if (filter_name_.empty() || filter_name_ == "sdsl_default") {
       auto const result = run_sdsl_default(bit_size_,
+                                           fill_percentage_,
+                                           bv,
+                                           rank_positions,
+                                           select1_positions);
+      std::cout << result << std::endl;
+    }
+    if (filter_name_.empty() || filter_name_ == "sdsl_v5") {
+      auto const result = run_sdsl_with_v5(bit_size_,
                                            fill_percentage_,
                                            bv,
                                            rank_positions,

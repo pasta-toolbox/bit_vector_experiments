@@ -34,7 +34,7 @@ BenchmarkResult run_sdsl_default(size_t const bit_size,
                                  std::vector<size_t> const& rank_positions,
                                  std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
-  result.algo_name = "sdsl-defaul-algorithm";
+  result.algo_name = "sdsl-rank-v-select-mcl";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
   result.rank1_query_count = rank_positions.size();

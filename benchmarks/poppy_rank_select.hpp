@@ -36,7 +36,7 @@ BenchmarkResult run_poppy_rank_select(size_t const bit_size,
                                       std::vector<size_t> const& rank_positions,
                                       std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
-  result.algo_name = "efficient-poppy-rank-selet";
+  result.algo_name = "efficient-poppy-rank-select";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
   result.rank1_query_count = rank_positions.size();

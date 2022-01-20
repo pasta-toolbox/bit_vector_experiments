@@ -1,5 +1,5 @@
 /*******************************************************************************
- * benchmarks/sdsl_default.hpp
+ * benchmarks/sdsl_with_v5.hpp
  *
  * Copyright (C) 2022 Florian Kurpicz <florian@kurpicz.org>
  *
@@ -22,35 +22,32 @@
 #pragma once
 
 #include "benchmark_result.hpp"
-#include "bit_vector/bit_vector.hpp"
-#include "bit_vector/support/bit_vector_flat_rank_select.hpp"
 #include "utils/do_not_optimize.hpp"
 #include "utils/memory_monitor.hpp"
 #include "utils/timer.hpp"
 
-template <pasta::OptimizedFor optimized_for, pasta::FindL2FlatWith find_with>
-BenchmarkResult run_pasta_popcount_flat(size_t const bit_size,
-                                        size_t const fill_percentage,
-                                        pasta::BitVector const& bv,
-                                        std::vector<size_t> const& rank_positions,
-                                        std::vector<size_t> const& select1_positions) {
-  std::string opt = (optimize_one_or_dont_care(optimized_for)) ? "one_dont_care" : "zero";
-  std::string find = (use_intrinsics(find_with)) ? "intrinsics" :
-    ((use_linear_search(find_with)) ? "linear_search" : "binary_search");
-  
+#include <sdsl/bit_vectors.hpp>
+
+BenchmarkResult run_sdsl_with_v5(size_t const bit_size,
+                                 size_t const fill_percentage,
+                                 sdsl::bit_vector const bv,
+                                 std::vector<size_t> const& rank_positions,
+                                 std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
-  result.algo_name = "pasta-popcount-flat-" + opt + "-" + find;
+  result.algo_name = "sdsl-rank-v5-select-mcl";
   result.bit_size = bit_size;
-  result.fill_percentage = fill_percentage;  
+  result.fill_percentage = fill_percentage;
   result.rank1_query_count = rank_positions.size();
   result.select1_query_count = select1_positions.size();
-  
+
   pasta::Timer timer;
   pasta::MemoryMonitor& mem_monitor = pasta::MemoryMonitor::instance();
+
   timer.reset();
   mem_monitor.reset();
 
-  pasta::BitVectorFlatRankSelect<optimized_for, find_with> rs(bv);
+  sdsl::bit_vector::select_1_type bvs1(&bv);
+  sdsl::rank_support_v5 bvr1(&bv);
 
   result.rank_select_construction_time = timer.get_and_reset();
   auto const rs_mem_peak = mem_monitor.get_and_reset();
@@ -58,12 +55,13 @@ BenchmarkResult run_pasta_popcount_flat(size_t const bit_size,
   timer.reset();
 
   for (size_t i = 0; i < rank_positions.size(); ++i) {
-    [[maybe_unused]] size_t const result = rs.rank1(rank_positions[i]);
+    [[maybe_unused]] size_t const result = bvr1.rank(rank_positions[i]);
     PASTA_DO_NOT_OPTIMIZE(result);
   }
   result.rank1_query_time = timer.get_and_reset();
+
   for (auto const pos : select1_positions) {
-    [[maybe_unused]] size_t const result = rs.select1(pos);
+    [[maybe_unused]] size_t const result = bvs1.select(pos);
     PASTA_DO_NOT_OPTIMIZE(result);
   }
   result.select1_query_time = timer.get_and_reset();
