@@ -64,7 +64,7 @@ private:
   void run_non_sdsl_benchmarks(std::mt19937 randomness) const {
     size_t one_bits = 0;
     pasta::BitVector bv(bit_size_, 0);
-    std::uniform_int_distribution<> bit_dist(0, 99);
+    std::uniform_int_distribution<size_t> bit_dist(0, 99);
     for (size_t i = 0; i < bit_size_; ++i) {
       bool const flip_bit =
           (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage_);
@@ -75,7 +75,7 @@ private:
     std::cout << "Finished flipping bits in bit vector (" << one_bits
               << " bits flipped)" << std::endl;
 
-    std::uniform_int_distribution<> rank_dist(0, bit_size_ - 1);
+    std::uniform_int_distribution<size_t> rank_dist(0, bit_size_ - 1);
     std::vector<size_t> rank_positions(query_count_);
 
     tlx::Aggregate<size_t> rank_query_properties;
@@ -90,7 +90,7 @@ private:
               << rank_query_properties.avg() << ")" << std::endl;
     
     std::vector<size_t> select1_positions(query_count_);
-    std::uniform_int_distribution<> select1_dist(1, one_bits);
+    std::uniform_int_distribution<size_t> select1_dist(1, one_bits);
 
     tlx::Aggregate<size_t> select1_query_properties;
     for (auto& pos : select1_positions) {
@@ -202,7 +202,7 @@ private:
   void run_sdsl_benchmarks(std::mt19937 randomness) const {
     size_t one_bits = 0;
     sdsl::bit_vector bv(bit_size_, 0);
-    std::uniform_int_distribution<> bit_dist(0, 99);
+    std::uniform_int_distribution<size_t> bit_dist(0, 99);
     for (size_t i = 0; i < bit_size_; ++i) {
       bool const flip_bit =
           (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage_);
@@ -214,7 +214,7 @@ private:
               << ") bits flipped" << std::endl;
 
 
-    std::uniform_int_distribution<> rank_dist(0, bit_size_ - 1);
+    std::uniform_int_distribution<size_t> rank_dist(0, bit_size_ - 1);
     std::vector<size_t> rank_positions(query_count_);
 
     tlx::Aggregate<size_t> rank_query_properties;
@@ -229,7 +229,7 @@ private:
               << rank_query_properties.avg() << ")" << std::endl;
     
     std::vector<size_t> select1_positions(query_count_);
-    std::uniform_int_distribution<> select1_dist(1, one_bits);
+    std::uniform_int_distribution<size_t> select1_dist(1, one_bits);
 
     tlx::Aggregate<size_t> select1_query_properties;
     for (auto& pos : select1_positions) {
