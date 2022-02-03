@@ -43,6 +43,7 @@
 class RankAndSelectBenchmark {
 public:
   size_t bit_size_ = 1024 * 1024;
+  bool adversarial_distribution_ = false;
   uint32_t fill_percentage_ = 50;
   size_t query_count_ = 10'000;
   std::string filter_name_ = "";
@@ -71,11 +72,28 @@ private:
     size_t one_bits = 0;
     pasta::BitVector bv(bit_size_, 0);
     std::uniform_int_distribution<size_t> bit_dist(0, 99);
-    for (size_t i = 0; i < bit_size_; ++i) {
-      bool const flip_bit =
-          (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage_);
-      one_bits += flip_bit ? 1 : 0;
-      bv[i] = flip_bit;
+    if (!adversarial_distribution_) {
+      for (size_t i = 0; i < bit_size_; ++i) {
+        bool const flip_bit =
+            (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage_);
+        one_bits += flip_bit ? 1 : 0;
+        bv[i] = flip_bit;
+      }
+    } else {
+      for (size_t i = 0; i < (bit_size_ / 100) * (100 - fill_percentage_);
+           ++i) {
+        bool const flip_bit = (static_cast<uint32_t>(bit_dist(randomness)) < 1);
+        one_bits += flip_bit ? 1 : 0;
+        bv[i] = flip_bit;
+      }
+      for (size_t i = (bit_size_ / 100) * (100 - fill_percentage_);
+           i < bit_size_;
+           ++i) {
+        bool const flip_bit =
+            (static_cast<uint32_t>(bit_dist(randomness)) < 99);
+        one_bits += flip_bit ? 1 : 0;
+        bv[i] = flip_bit;
+      }
     }
 
     std::cout << "Finished flipping bits in bit vector (" << one_bits
@@ -130,6 +148,7 @@ private:
     if (filter_name_.empty() || filter_name_ == "rank9_select") {
       auto const result = run_rank9_select(bit_size_,
                                            fill_percentage_,
+                                           adversarial_distribution_,
                                            bv,
                                            rank_positions,
                                            select1_positions);
@@ -139,6 +158,7 @@ private:
       {
         auto const result = run_simple_select<0>(bit_size_,
                                                  fill_percentage_,
+                                                 adversarial_distribution_,
                                                  bv,
                                                  select1_positions);
         std::cout << result << std::endl;
@@ -147,6 +167,7 @@ private:
       {
         auto const result = run_simple_select<1>(bit_size_,
                                                  fill_percentage_,
+                                                 adversarial_distribution_,
                                                  bv,
                                                  select1_positions);
         std::cout << result << std::endl;
@@ -155,6 +176,7 @@ private:
       {
         auto const result = run_simple_select<2>(bit_size_,
                                                  fill_percentage_,
+                                                 adversarial_distribution_,
                                                  bv,
                                                  select1_positions);
         std::cout << result << std::endl;
@@ -163,6 +185,7 @@ private:
       {
         auto const result = run_simple_select<3>(bit_size_,
                                                  fill_percentage_,
+                                                 adversarial_distribution_,
                                                  bv,
                                                  select1_positions);
         std::cout << result << std::endl;
@@ -172,6 +195,7 @@ private:
     if (filter_name_.empty() || filter_name_ == "simple_select_half") {
       auto const result = run_simple_select_half(bit_size_,
                                                  fill_percentage_,
+                                                 adversarial_distribution_,
                                                  bv,
                                                  select1_positions);
       std::cout << result << std::endl;
@@ -180,6 +204,7 @@ private:
     if (filter_name_.empty() || filter_name_ == "poppy_rank_select") {
       auto const result = run_poppy_rank_select(bit_size_,
                                                 fill_percentage_,
+                                                adversarial_distribution_,
                                                 bv,
                                                 rank_positions,
                                                 select1_positions);
@@ -189,6 +214,7 @@ private:
     if (filter_name_.empty() || filter_name_ == "pasta_popcount") {
       auto const result = run_pasta_popcount(bit_size_,
                                              fill_percentage_,
+                                             adversarial_distribution_,
                                              bv,
                                              rank_positions,
                                              select0_positions,
@@ -203,6 +229,7 @@ private:
                                     pasta::FindL2FlatWith::LINEAR_SEARCH>(
                 bit_size_,
                 fill_percentage_,
+                adversarial_distribution_,
                 bv,
                 rank_positions,
                 select0_positions,
@@ -216,6 +243,7 @@ private:
                                     pasta::FindL2FlatWith::BINARY_SEARCH>(
                 bit_size_,
                 fill_percentage_,
+                adversarial_distribution_,
                 bv,
                 rank_positions,
                 select0_positions,
@@ -229,6 +257,7 @@ private:
                                     pasta::FindL2FlatWith::INTRINSICS>(
                 bit_size_,
                 fill_percentage_,
+                adversarial_distribution_,
                 bv,
                 rank_positions,
                 select0_positions,
@@ -244,6 +273,7 @@ private:
                                     pasta::FindL2WideWith::LINEAR_SEARCH>(
                 bit_size_,
                 fill_percentage_,
+                adversarial_distribution_,
                 bv,
                 rank_positions,
                 select0_positions,
@@ -257,6 +287,7 @@ private:
                                     pasta::FindL2WideWith::BINARY_SEARCH>(
                 bit_size_,
                 fill_percentage_,
+                adversarial_distribution_,
                 bv,
                 rank_positions,
                 select0_positions,
@@ -273,11 +304,28 @@ private:
     size_t one_bits = 0;
     sdsl::bit_vector bv(bit_size_, 0);
     std::uniform_int_distribution<size_t> bit_dist(0, 99);
-    for (size_t i = 0; i < bit_size_; ++i) {
-      bool const flip_bit =
-          (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage_);
-      one_bits += flip_bit ? 1 : 0;
-      bv[i] = flip_bit;
+    if (!adversarial_distribution_) {
+      for (size_t i = 0; i < bit_size_; ++i) {
+        bool const flip_bit =
+            (static_cast<uint32_t>(bit_dist(randomness)) < fill_percentage_);
+        one_bits += flip_bit ? 1 : 0;
+        bv[i] = flip_bit;
+      }
+    } else {
+      for (size_t i = 0; i < (bit_size_ / 100) * (100 - fill_percentage_);
+           ++i) {
+        bool const flip_bit = (static_cast<uint32_t>(bit_dist(randomness)) < 1);
+        one_bits += flip_bit ? 1 : 0;
+        bv[i] = flip_bit;
+      }
+      for (size_t i = (bit_size_ / 100) * (100 - fill_percentage_);
+           i < bit_size_;
+           ++i) {
+        bool const flip_bit =
+            (static_cast<uint32_t>(bit_dist(randomness)) < 99);
+        one_bits += flip_bit ? 1 : 0;
+        bv[i] = flip_bit;
+      }
     }
 
     std::cout << "Finished flipping bits in bit vector (" << one_bits
@@ -318,6 +366,7 @@ private:
     if (filter_name_.empty() || filter_name_ == "sdsl_default_rank") {
       auto const result = run_sdsl_default_rank(bit_size_,
                                                 fill_percentage_,
+                                                adversarial_distribution_,
                                                 bv,
                                                 rank_positions,
                                                 select1_positions);
@@ -327,6 +376,7 @@ private:
     if (filter_name_.empty() || filter_name_ == "sdsl_default_select") {
       auto const result = run_sdsl_default_select(bit_size_,
                                                   fill_percentage_,
+                                                  adversarial_distribution_,
                                                   bv,
                                                   rank_positions,
                                                   select1_positions);
@@ -336,6 +386,7 @@ private:
     if (filter_name_.empty() || filter_name_ == "sdsl_rank_v5") {
       auto const result = run_sdsl_rank_v5(bit_size_,
                                            fill_percentage_,
+                                           adversarial_distribution_,
                                            bv,
                                            rank_positions,
                                            select1_positions);
@@ -369,7 +420,13 @@ int32_t main(int32_t argc, char const* const argv[]) {
                "query_count",
                rsb.query_count_,
                "Number of rank and select"
-               " queries (accepts SI units, default is 10000)");
+               " queries (accepts SI units, default is 10000).");
+
+  cp.add_bool('a',
+              "adversierial_distribution",
+              rsb.adversarial_distribution_,
+              "Create a bit vector where the majority of set bits is at the "
+              "end (default is false).");
 
   cp.add_string('n', "name", rsb.filter_name_, "Runs the named algorithm.");
 

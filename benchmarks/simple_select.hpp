@@ -33,12 +33,14 @@ template <size_t Tuning>
 BenchmarkResult
 run_simple_select(size_t const bit_size,
                   size_t const fill_percentage,
+                  bool const is_adversarial,
                   pasta::BitVector const& bv,
                   std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
   result.algo_name = "sux-SimpleSelect-" + std::to_string(Tuning);
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
+  result.is_adversarial = is_adversarial;
   result.rank1_query_count = 0;
   result.select1_query_count = select1_positions.size();
 

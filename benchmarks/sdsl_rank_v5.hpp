@@ -30,6 +30,7 @@
 
 BenchmarkResult run_sdsl_rank_v5(size_t const bit_size,
                                  size_t const fill_percentage,
+                                 bool const is_adversarial,
                                  sdsl::bit_vector const bv,
                                  std::vector<size_t> const& rank_positions,
                                  std::vector<size_t> const& select1_positions) {
@@ -37,6 +38,7 @@ BenchmarkResult run_sdsl_rank_v5(size_t const bit_size,
   result.algo_name = "sdsl-rank-v5";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
+  result.is_adversarial = is_adversarial;
   result.rank1_query_count = rank_positions.size();
 
   pasta::Timer timer;

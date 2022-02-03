@@ -33,6 +33,7 @@
 BenchmarkResult
 run_poppy_rank_select(size_t const bit_size,
                       size_t const fill_percentage,
+                      bool const is_adversarial,
                       pasta::BitVector const& bv,
                       std::vector<size_t> const& rank_positions,
                       std::vector<size_t> const& select1_positions) {
@@ -40,6 +41,7 @@ run_poppy_rank_select(size_t const bit_size,
   result.algo_name = "efficient-poppy-rank-select";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
+  result.is_adversarial = is_adversarial;
   result.rank1_query_count = rank_positions.size();
   result.select1_query_count = select1_positions.size();
 

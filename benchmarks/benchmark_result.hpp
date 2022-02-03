@@ -27,6 +27,7 @@ struct BenchmarkResult {
   std::string algo_name = "";
   size_t bit_size = 0;
   size_t fill_percentage = 0;
+  bool is_adversarial = false;
   size_t rank_select_construction_time = 0;
   size_t rank_select_construction_memory_peak = 0;
   size_t rank1_query_count = 0;
@@ -42,6 +43,7 @@ std::ostream& operator<<(std::ostream& os, BenchmarkResult const& br) {
   os << "RESULT"
      << " algo=" << br.algo_name << " bit_size=" << br.bit_size
      << " fill_percentage=" << br.fill_percentage
+     << " is_adversarial=" << (br.is_adversarial ? "true" : "false")
      << " rank_select_construction_time=" << br.rank_select_construction_time
      << " rank_select_memory_peak=" << br.rank_select_construction_memory_peak
      << " rank1_query_count=" << br.rank1_query_count
