@@ -29,17 +29,16 @@
 
 #include <sdsl/bit_vectors.hpp>
 
-BenchmarkResult run_sdsl_with_v5(size_t const bit_size,
+BenchmarkResult run_sdsl_rank_v5(size_t const bit_size,
                                  size_t const fill_percentage,
                                  sdsl::bit_vector const bv,
                                  std::vector<size_t> const& rank_positions,
                                  std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
-  result.algo_name = "sdsl-rank-v5-select-mcl";
+  result.algo_name = "sdsl-rank-v5";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
   result.rank1_query_count = rank_positions.size();
-  result.select1_query_count = select1_positions.size();
 
   pasta::Timer timer;
   pasta::MemoryMonitor& mem_monitor = pasta::MemoryMonitor::instance();
@@ -47,7 +46,6 @@ BenchmarkResult run_sdsl_with_v5(size_t const bit_size,
   timer.reset();
   mem_monitor.reset();
 
-  sdsl::bit_vector::select_1_type bvs1(&bv);
   sdsl::rank_support_v5 bvr1(&bv);
 
   result.rank_select_construction_time = timer.get_and_reset();
@@ -61,11 +59,6 @@ BenchmarkResult run_sdsl_with_v5(size_t const bit_size,
   }
   result.rank1_query_time = timer.get_and_reset();
 
-  for (auto const pos : select1_positions) {
-    [[maybe_unused]] size_t const result = bvs1.select(pos);
-    PASTA_DO_NOT_OPTIMIZE(result);
-  }
-  result.select1_query_time = timer.get_and_reset();
   auto const rs_query_mem_peak = mem_monitor.get_and_reset();
   result.rank_select_query_memory_peak = rs_query_mem_peak.cur_peak;
 

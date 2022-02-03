@@ -25,8 +25,9 @@
 #include "pasta_popcount_wide.hpp"
 #include "poppy_rank_select.hpp"
 #include "rank9_select.hpp"
-#include "sdsl_default.hpp"
-#include "sdsl_with_v5.hpp"
+#include "sdsl_default_rank.hpp"
+#include "sdsl_default_select.hpp"
+#include "sdsl_rank_v5.hpp"
 #include "simple_select.hpp"
 #include "simple_select_half.hpp"
 
@@ -212,6 +213,8 @@ private:
         std::cout << result << std::endl;
         std::this_thread::sleep_for(5s);
       }
+    }
+    if (filter_name_.empty() || filter_name_ == "pasta_popcount_wide") {
       {
         auto const result =
           run_pasta_popcount_wide<pasta::OptimizedFor::DONT_CARE,
@@ -284,17 +287,26 @@ private:
 
     std::this_thread::sleep_for(5s);
 
-    if (filter_name_.empty() || filter_name_ == "sdsl_default") {
-      auto const result = run_sdsl_default(bit_size_,
-                                           fill_percentage_,
-                                           bv,
-                                           rank_positions,
-                                           select1_positions);
+    if (filter_name_.empty() || filter_name_ == "sdsl_default_rank") {
+      auto const result = run_sdsl_default_rank(bit_size_,
+                                                fill_percentage_,
+                                                bv,
+                                                rank_positions,
+                                                select1_positions);
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
     }
-    if (filter_name_.empty() || filter_name_ == "sdsl_v5") {
-      auto const result = run_sdsl_with_v5(bit_size_,
+    if (filter_name_.empty() || filter_name_ == "sdsl_default_select") {
+      auto const result = run_sdsl_default_select(bit_size_,
+                                                  fill_percentage_,
+                                                  bv,
+                                                  rank_positions,
+                                                  select1_positions);
+      std::cout << result << std::endl;
+      std::this_thread::sleep_for(5s);
+    }
+        if (filter_name_.empty() || filter_name_ == "sdsl_rank_v5") {
+      auto const result = run_sdsl_rank_v5(bit_size_,
                                            fill_percentage_,
                                            bv,
                                            rank_positions,
