@@ -26,7 +26,6 @@
 #include <pasta/utils/do_not_optimize.hpp>
 #include <pasta/utils/memory_monitor.hpp>
 #include <pasta/utils/timer.hpp>
-
 #include <sdsl/bit_vectors.hpp>
 
 BenchmarkResult run_sdsl_rank_v5(size_t const bit_size,

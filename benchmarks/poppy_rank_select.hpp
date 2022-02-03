@@ -23,26 +23,26 @@
 
 #include "benchmark_result.hpp"
 
+#include <bitmap.h>
 #include <pasta/bit_vector/bit_vector.hpp>
 #include <pasta/utils/do_not_optimize.hpp>
 #include <pasta/utils/memory_monitor.hpp>
 #include <pasta/utils/timer.hpp>
-
-#include <bitmap.h>
 #include <shared.h>
 
-BenchmarkResult run_poppy_rank_select(size_t const bit_size,
-                                      size_t const fill_percentage,
-                                      pasta::BitVector const& bv,
-                                      std::vector<size_t> const& rank_positions,
-                                      std::vector<size_t> const& select1_positions) {
+BenchmarkResult
+run_poppy_rank_select(size_t const bit_size,
+                      size_t const fill_percentage,
+                      pasta::BitVector const& bv,
+                      std::vector<size_t> const& rank_positions,
+                      std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
   result.algo_name = "efficient-poppy-rank-select";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
   result.rank1_query_count = rank_positions.size();
   result.select1_query_count = select1_positions.size();
-  
+
   auto const bv_data = bv.data();
   pasta::Timer timer;
   pasta::MemoryMonitor& mem_monitor = pasta::MemoryMonitor::instance();

@@ -33,10 +33,10 @@
 
 #include <array>
 #include <chrono>
-#include <thread>
 #include <iostream>
 #include <ostream>
 #include <random>
+#include <thread>
 #include <tlx/cmdline_parser.hpp>
 #include <tlx/math/aggregate.hpp>
 
@@ -91,10 +91,26 @@ private:
     }
 
     std::cout << "Finished creating rank query positions (min pos: "
-              << rank_query_properties.min() << ", max pos: "
-              << rank_query_properties.max() << ", avg pos:"
-              << rank_query_properties.avg() << ")" << std::endl;
-    
+              << rank_query_properties.min()
+              << ", max pos: " << rank_query_properties.max()
+              << ", avg pos:" << rank_query_properties.avg() << ")"
+              << std::endl;
+
+    std::vector<size_t> select0_positions(query_count_);
+    std::uniform_int_distribution<size_t> select0_dist(1, bit_size_ - one_bits);
+
+    tlx::Aggregate<size_t> select0_query_properties;
+    for (auto& pos : select0_positions) {
+      pos = select0_dist(randomness);
+      select0_query_properties.add(pos);
+    }
+
+    std::cout << "Finished creating select0 query ranks (min rank: "
+              << select0_query_properties.min()
+              << ", max rank: " << select0_query_properties.max()
+              << ", avg rank:" << select0_query_properties.avg() << ")"
+              << std::endl;
+
     std::vector<size_t> select1_positions(query_count_);
     std::uniform_int_distribution<size_t> select1_dist(1, one_bits);
 
@@ -104,12 +120,13 @@ private:
       select1_query_properties.add(pos);
     }
 
-    std::cout << "Finished creating select query ranks (min rank: "
-              << select1_query_properties.min() << ", max rank: "
-              << select1_query_properties.max() << ", avg rank:"
-              << select1_query_properties.avg() << ")" << std::endl;
+    std::cout << "Finished creating select1 query ranks (min rank: "
+              << select1_query_properties.min()
+              << ", max rank: " << select1_query_properties.max()
+              << ", avg rank:" << select1_query_properties.avg() << ")"
+              << std::endl;
     std::this_thread::sleep_for(5s);
-    
+
     if (filter_name_.empty() || filter_name_ == "rank9_select") {
       auto const result = run_rank9_select(bit_size_,
                                            fill_percentage_,
@@ -174,6 +191,7 @@ private:
                                              fill_percentage_,
                                              bv,
                                              rank_positions,
+                                             select0_positions,
                                              select1_positions);
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
@@ -181,35 +199,40 @@ private:
     if (filter_name_.empty() || filter_name_ == "pasta_popcount_flat") {
       {
         auto const result =
-          run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
-                                  pasta::FindL2FlatWith::LINEAR_SEARCH>(bit_size_,
-                                                                        fill_percentage_,
-                                                    bv,
-                                                    rank_positions,
-                                                    select1_positions);
+            run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
+                                    pasta::FindL2FlatWith::LINEAR_SEARCH>(
+                bit_size_,
+                fill_percentage_,
+                bv,
+                rank_positions,
+                select0_positions,
+                select1_positions);
         std::cout << result << std::endl;
         std::this_thread::sleep_for(5s);
       }
       {
         auto const result =
-                    run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
-                                  pasta::FindL2FlatWith::BINARY_SEARCH>(
-                                                                        bit_size_,
-                                                    fill_percentage_,
-                                                    bv,
-                                                    rank_positions,
-                                                    select1_positions);
+            run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
+                                    pasta::FindL2FlatWith::BINARY_SEARCH>(
+                bit_size_,
+                fill_percentage_,
+                bv,
+                rank_positions,
+                select0_positions,
+                select1_positions);
         std::cout << result << std::endl;
         std::this_thread::sleep_for(5s);
       }
       {
         auto const result =
-          run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
-                                  pasta::FindL2FlatWith::INTRINSICS>(bit_size_,
-                                                    fill_percentage_,
-                                                    bv,
-                                                    rank_positions,
-                                                    select1_positions);
+            run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
+                                    pasta::FindL2FlatWith::INTRINSICS>(
+                bit_size_,
+                fill_percentage_,
+                bv,
+                rank_positions,
+                select0_positions,
+                select1_positions);
         std::cout << result << std::endl;
         std::this_thread::sleep_for(5s);
       }
@@ -217,23 +240,27 @@ private:
     if (filter_name_.empty() || filter_name_ == "pasta_popcount_wide") {
       {
         auto const result =
-          run_pasta_popcount_wide<pasta::OptimizedFor::DONT_CARE,
-                                  pasta::FindL2WideWith::LINEAR_SEARCH>(bit_size_,
-                                                    fill_percentage_,
-                                                    bv,
-                                                    rank_positions,
-                                                    select1_positions);
+            run_pasta_popcount_wide<pasta::OptimizedFor::DONT_CARE,
+                                    pasta::FindL2WideWith::LINEAR_SEARCH>(
+                bit_size_,
+                fill_percentage_,
+                bv,
+                rank_positions,
+                select0_positions,
+                select1_positions);
         std::cout << result << std::endl;
         std::this_thread::sleep_for(5s);
       }
       {
         auto const result =
-          run_pasta_popcount_wide<pasta::OptimizedFor::DONT_CARE,
-                                  pasta::FindL2WideWith::BINARY_SEARCH>(bit_size_,
-                                                    fill_percentage_,
-                                                    bv,
-                                                    rank_positions,
-                                                    select1_positions);
+            run_pasta_popcount_wide<pasta::OptimizedFor::DONT_CARE,
+                                    pasta::FindL2WideWith::BINARY_SEARCH>(
+                bit_size_,
+                fill_percentage_,
+                bv,
+                rank_positions,
+                select0_positions,
+                select1_positions);
         std::cout << result << std::endl;
         std::this_thread::sleep_for(5s);
       }
@@ -256,7 +283,6 @@ private:
     std::cout << "Finished flipping bits in bit vector (" << one_bits
               << ") bits flipped" << std::endl;
 
-
     std::uniform_int_distribution<size_t> rank_dist(0, bit_size_ - 1);
     std::vector<size_t> rank_positions(query_count_);
 
@@ -267,10 +293,11 @@ private:
     }
 
     std::cout << "Finished creating rank query positions (min pos: "
-              << rank_query_properties.min() << ", max pos: "
-              << rank_query_properties.max() << ", avg pos:"
-              << rank_query_properties.avg() << ")" << std::endl;
-    
+              << rank_query_properties.min()
+              << ", max pos: " << rank_query_properties.max()
+              << ", avg pos:" << rank_query_properties.avg() << ")"
+              << std::endl;
+
     std::vector<size_t> select1_positions(query_count_);
     std::uniform_int_distribution<size_t> select1_dist(1, one_bits);
 
@@ -280,10 +307,11 @@ private:
       select1_query_properties.add(pos);
     }
 
-    std::cout << "Finished creating select query ranks (min rank: "
-              << select1_query_properties.min() << ", max rank: "
-              << select1_query_properties.max() << ", avg rank:"
-              << select1_query_properties.avg() << ")" << std::endl;
+    std::cout << "Finished creating select1 query ranks (min rank: "
+              << select1_query_properties.min()
+              << ", max rank: " << select1_query_properties.max()
+              << ", avg rank:" << select1_query_properties.avg() << ")"
+              << std::endl;
 
     std::this_thread::sleep_for(5s);
 
@@ -305,7 +333,7 @@ private:
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
     }
-        if (filter_name_.empty() || filter_name_ == "sdsl_rank_v5") {
+    if (filter_name_.empty() || filter_name_ == "sdsl_rank_v5") {
       auto const result = run_sdsl_rank_v5(bit_size_,
                                            fill_percentage_,
                                            bv,

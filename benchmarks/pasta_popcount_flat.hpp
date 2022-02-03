@@ -30,22 +30,28 @@
 #include <pasta/utils/timer.hpp>
 
 template <pasta::OptimizedFor optimized_for, pasta::FindL2FlatWith find_with>
-BenchmarkResult run_pasta_popcount_flat(size_t const bit_size,
-                                        size_t const fill_percentage,
-                                        pasta::BitVector const& bv,
-                                        std::vector<size_t> const& rank_positions,
-                                        std::vector<size_t> const& select1_positions) {
-  std::string opt = (optimize_one_or_dont_care(optimized_for)) ? "one_dont_care" : "zero";
-  std::string find = (use_intrinsics(find_with)) ? "intrinsics" :
-    ((use_linear_search(find_with)) ? "linear_search" : "binary_search");
-  
+BenchmarkResult
+run_pasta_popcount_flat(size_t const bit_size,
+                        size_t const fill_percentage,
+                        pasta::BitVector const& bv,
+                        std::vector<size_t> const& rank_positions,
+                        std::vector<size_t> const& select0_positions,
+                        std::vector<size_t> const& select1_positions) {
+  std::string opt =
+      (optimize_one_or_dont_care(optimized_for)) ? "one_dont_care" : "zero";
+  std::string find =
+      (use_intrinsics(find_with)) ?
+          "intrinsics" :
+          ((use_linear_search(find_with)) ? "linear_search" : "binary_search");
+
   BenchmarkResult result;
   result.algo_name = "pasta-popcount-flat-" + opt + "-" + find;
   result.bit_size = bit_size;
-  result.fill_percentage = fill_percentage;  
+  result.fill_percentage = fill_percentage;
   result.rank1_query_count = rank_positions.size();
+  result.select0_query_count = select0_positions.size();
   result.select1_query_count = select1_positions.size();
-  
+
   pasta::Timer timer;
   pasta::MemoryMonitor& mem_monitor = pasta::MemoryMonitor::instance();
   timer.reset();
@@ -63,6 +69,13 @@ BenchmarkResult run_pasta_popcount_flat(size_t const bit_size,
     PASTA_DO_NOT_OPTIMIZE(result);
   }
   result.rank1_query_time = timer.get_and_reset();
+
+  for (auto const pos : select0_positions) {
+    [[maybe_unused]] size_t const result = rs.select0(pos);
+    PASTA_DO_NOT_OPTIMIZE(result);
+  }
+  result.select0_query_time = timer.get_and_reset();
+
   for (auto const pos : select1_positions) {
     [[maybe_unused]] size_t const result = rs.select1(pos);
     PASTA_DO_NOT_OPTIMIZE(result);

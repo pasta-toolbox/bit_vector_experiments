@@ -27,20 +27,20 @@
 #include <pasta/utils/do_not_optimize.hpp>
 #include <pasta/utils/memory_monitor.hpp>
 #include <pasta/utils/timer.hpp>
-
 #include <sux/bits/SimpleSelectHalf.hpp>
 
-BenchmarkResult run_simple_select_half(size_t const bit_size,
-                                       size_t const fill_percentage,
-                                       pasta::BitVector const& bv,
-                                       std::vector<size_t> const& select1_positions) {
+BenchmarkResult
+run_simple_select_half(size_t const bit_size,
+                       size_t const fill_percentage,
+                       pasta::BitVector const& bv,
+                       std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
   result.algo_name = "sux-SimpleSelectHalf";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
   result.rank1_query_count = 0;
   result.select1_query_count = select1_positions.size();
-  
+
   auto const bv_data = bv.data();
   pasta::Timer timer;
   pasta::MemoryMonitor& mem_monitor = pasta::MemoryMonitor::instance();

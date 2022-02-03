@@ -27,14 +27,14 @@
 #include <pasta/utils/do_not_optimize.hpp>
 #include <pasta/utils/memory_monitor.hpp>
 #include <pasta/utils/timer.hpp>
-
 #include <sux/bits/SimpleSelect.hpp>
 
 template <size_t Tuning>
-BenchmarkResult run_simple_select(size_t const bit_size,
-                                 size_t const fill_percentage,
-                                  pasta::BitVector const& bv,
-                                 std::vector<size_t> const& select1_positions) {
+BenchmarkResult
+run_simple_select(size_t const bit_size,
+                  size_t const fill_percentage,
+                  pasta::BitVector const& bv,
+                  std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
   result.algo_name = "sux-SimpleSelect-" + std::to_string(Tuning);
   result.bit_size = bit_size;

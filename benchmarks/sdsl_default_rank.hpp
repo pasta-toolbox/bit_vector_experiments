@@ -26,14 +26,14 @@
 #include <pasta/utils/do_not_optimize.hpp>
 #include <pasta/utils/memory_monitor.hpp>
 #include <pasta/utils/timer.hpp>
-
 #include <sdsl/bit_vectors.hpp>
 
-BenchmarkResult run_sdsl_default_rank(size_t const bit_size,
-                                      size_t const fill_percentage,
-                                      sdsl::bit_vector const bv,
-                                      std::vector<size_t> const& rank_positions,
-                                      std::vector<size_t> const& select1_positions) {
+BenchmarkResult
+run_sdsl_default_rank(size_t const bit_size,
+                      size_t const fill_percentage,
+                      sdsl::bit_vector const bv,
+                      std::vector<size_t> const& rank_positions,
+                      std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
   result.algo_name = "sdsl-rank-v";
   result.bit_size = bit_size;
