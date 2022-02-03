@@ -52,7 +52,7 @@ run_poppy_rank_select(size_t const bit_size,
   timer.reset();
   mem_monitor.reset();
 
-  BitmapPoppy rs(bv_data.data(), bv_data.size() * 64);
+  BitmapPoppy rs(bv_data.data(), bit_size);
 
   result.rank_select_construction_time = timer.get_and_sleep_and_reset(5);
   auto const rs_mem_peak = mem_monitor.get_and_reset();

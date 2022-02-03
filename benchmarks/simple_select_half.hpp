@@ -50,7 +50,7 @@ run_simple_select_half(size_t const bit_size,
   timer.reset();
   mem_monitor.reset();
 
-  sux::bits::SimpleSelectHalf rs(bv_data.data(), bv_data.size() * 64);
+  sux::bits::SimpleSelectHalf rs(bv_data.data(), bit_size);
 
   result.rank_select_construction_time = timer.get_and_sleep_and_reset(5);
   auto const rs_mem_peak = mem_monitor.get_and_reset();
