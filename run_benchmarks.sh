@@ -7,7 +7,7 @@ echo ${file_name}
 
 lscpu | tee -a ${file_name}
 
-for size in 100 200 300 400 500 600 700 800 900 1000 2000 3000 4000 5000 6000 7000 8000 9000 10000
+for size in 1 2 3 4
 do
     for fill_rate in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95
     do

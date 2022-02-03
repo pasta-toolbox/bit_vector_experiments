@@ -22,6 +22,7 @@
 #include "benchmark_result.hpp"
 #include "pasta_popcount.hpp"
 #include "pasta_popcount_flat.hpp"
+#include "pasta_popcount_wide.hpp"
 #include "poppy_rank_select.hpp"
 #include "rank9_select.hpp"
 #include "sdsl_default.hpp"
@@ -204,6 +205,28 @@ private:
         auto const result =
           run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
                                   pasta::FindL2FlatWith::INTRINSICS>(bit_size_,
+                                                    fill_percentage_,
+                                                    bv,
+                                                    rank_positions,
+                                                    select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+      {
+        auto const result =
+          run_pasta_popcount_wide<pasta::OptimizedFor::DONT_CARE,
+                                  pasta::FindL2WideWith::LINEAR_SEARCH>(bit_size_,
+                                                    fill_percentage_,
+                                                    bv,
+                                                    rank_positions,
+                                                    select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+      {
+        auto const result =
+          run_pasta_popcount_wide<pasta::OptimizedFor::DONT_CARE,
+                                  pasta::FindL2WideWith::BINARY_SEARCH>(bit_size_,
                                                     fill_percentage_,
                                                     bv,
                                                     rank_positions,

@@ -22,11 +22,12 @@
 #pragma once
 
 #include "benchmark_result.hpp"
-#include "bit_vector/bit_vector.hpp"
-#include "bit_vector/support/bit_vector_rank_select.hpp"
-#include "utils/do_not_optimize.hpp"
-#include "utils/memory_monitor.hpp"
-#include "utils/timer.hpp"
+
+#include <pasta/bit_vector/bit_vector.hpp>
+#include <pasta/bit_vector/support/rank_select.hpp>
+#include <pasta/utils/do_not_optimize.hpp>
+#include <pasta/utils/memory_monitor.hpp>
+#include <pasta/utils/timer.hpp>
 
 BenchmarkResult run_pasta_popcount(size_t const bit_size,
                                    size_t const fill_percentage,
@@ -45,7 +46,7 @@ BenchmarkResult run_pasta_popcount(size_t const bit_size,
   timer.reset();
   mem_monitor.reset();
 
-  pasta::BitVectorRankSelect rs(bv);
+  pasta::RankSelect rs(bv);
 
   result.rank_select_construction_time = timer.get_and_reset();
   auto const rs_mem_peak = mem_monitor.get_and_reset();

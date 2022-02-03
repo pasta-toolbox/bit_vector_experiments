@@ -22,9 +22,10 @@
 #pragma once
 
 #include "benchmark_result.hpp"
-#include "utils/do_not_optimize.hpp"
-#include "utils/memory_monitor.hpp"
-#include "utils/timer.hpp"
+
+#include <pasta/utils/do_not_optimize.hpp>
+#include <pasta/utils/memory_monitor.hpp>
+#include <pasta/utils/timer.hpp>
 
 #include <sdsl/bit_vectors.hpp>
 

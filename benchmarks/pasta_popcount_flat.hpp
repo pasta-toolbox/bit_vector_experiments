@@ -22,11 +22,12 @@
 #pragma once
 
 #include "benchmark_result.hpp"
-#include "bit_vector/bit_vector.hpp"
-#include "bit_vector/support/bit_vector_flat_rank_select.hpp"
-#include "utils/do_not_optimize.hpp"
-#include "utils/memory_monitor.hpp"
-#include "utils/timer.hpp"
+
+#include <pasta/bit_vector/bit_vector.hpp>
+#include <pasta/bit_vector/support/flat_rank_select.hpp>
+#include <pasta/utils/do_not_optimize.hpp>
+#include <pasta/utils/memory_monitor.hpp>
+#include <pasta/utils/timer.hpp>
 
 template <pasta::OptimizedFor optimized_for, pasta::FindL2FlatWith find_with>
 BenchmarkResult run_pasta_popcount_flat(size_t const bit_size,
@@ -50,7 +51,7 @@ BenchmarkResult run_pasta_popcount_flat(size_t const bit_size,
   timer.reset();
   mem_monitor.reset();
 
-  pasta::BitVectorFlatRankSelect<optimized_for, find_with> rs(bv);
+  pasta::FlatRankSelect<optimized_for, find_with> rs(bv);
 
   result.rank_select_construction_time = timer.get_and_reset();
   auto const rs_mem_peak = mem_monitor.get_and_reset();
