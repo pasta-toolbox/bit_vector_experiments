@@ -49,7 +49,7 @@ BenchmarkResult run_sdsl_rank_v5(size_t const bit_size,
 
   sdsl::rank_support_v5 bvr1(&bv);
 
-  result.rank_select_construction_time = timer.get_and_reset();
+  result.rank_select_construction_time = timer.get_and_sleep_and_reset(5);
   auto const rs_mem_peak = mem_monitor.get_and_reset();
   result.rank_select_construction_memory_peak = rs_mem_peak.cur_peak;
   timer.reset();

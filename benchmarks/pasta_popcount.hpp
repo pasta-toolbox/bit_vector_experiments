@@ -53,7 +53,7 @@ run_pasta_popcount(size_t const bit_size,
 
   pasta::RankSelect rs(bv);
 
-  result.rank_select_construction_time = timer.get_and_reset();
+  result.rank_select_construction_time = timer.get_and_sleep_and_reset(5);
   auto const rs_mem_peak = mem_monitor.get_and_reset();
   result.rank_select_construction_memory_peak = rs_mem_peak.cur_peak;
   timer.reset();
@@ -62,13 +62,13 @@ run_pasta_popcount(size_t const bit_size,
     [[maybe_unused]] size_t const result = rs.rank1(rank_positions[i]);
     PASTA_DO_NOT_OPTIMIZE(result);
   }
-  result.rank1_query_time = timer.get_and_reset();
+  result.rank1_query_time = timer.get_and_sleep_and_reset(5);
 
   for (auto const pos : select0_positions) {
     [[maybe_unused]] size_t const result = rs.select0(pos);
     PASTA_DO_NOT_OPTIMIZE(result);
   }
-  result.select0_query_time = timer.get_and_reset();
+  result.select0_query_time = timer.get_and_sleep_and_reset(5);
 
   for (auto const pos : select1_positions) {
     [[maybe_unused]] size_t const result = rs.select1(pos);
