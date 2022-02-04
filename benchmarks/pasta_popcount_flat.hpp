@@ -59,7 +59,9 @@ run_pasta_popcount_flat(size_t const bit_size,
   timer.reset();
   mem_monitor.reset();
 
+  PASTA_DO_NOT_OPTIMIZE(bv);
   pasta::FlatRankSelect<optimized_for, find_with> rs(bv);
+  PASTA_DO_NOT_OPTIMIZE(rs);
 
   result.rank_select_construction_time = timer.get_and_sleep_and_reset(5);
   auto const rs_mem_peak = mem_monitor.get_and_reset();
