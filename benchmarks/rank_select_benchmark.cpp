@@ -96,6 +96,7 @@ private:
         bv[i] = flip_bit;
       }
     }
+    size_t const zero_bits = bit_size_ - one_bits;
 
     std::cout << "Finished flipping bits in bit vector (" << one_bits
               << " bits flipped)" << std::endl;
@@ -116,7 +117,7 @@ private:
               << std::endl;
 
     std::vector<size_t> select0_positions(query_count_);
-    std::uniform_int_distribution<size_t> select0_dist(1, bit_size_ - one_bits);
+    std::uniform_int_distribution<size_t> select0_dist(1, zero_bits - 1);
 
     tlx::Aggregate<size_t> select0_query_properties;
     for (auto& pos : select0_positions) {
@@ -131,7 +132,7 @@ private:
               << std::endl;
 
     std::vector<size_t> select1_positions(query_count_);
-    std::uniform_int_distribution<size_t> select1_dist(1, one_bits);
+    std::uniform_int_distribution<size_t> select1_dist(1, one_bits - 1);
 
     tlx::Aggregate<size_t> select1_query_properties;
     for (auto& pos : select1_positions) {
