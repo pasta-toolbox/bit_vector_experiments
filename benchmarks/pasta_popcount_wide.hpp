@@ -35,9 +35,7 @@ run_pasta_popcount_wide(size_t const bit_size,
                         size_t const fill_percentage,
                         bool const is_adversarial,
                         pasta::BitVector const& bv,
-                        std::vector<size_t> const& rank_positions,
-                        std::vector<size_t> const& select0_positions,
-                        std::vector<size_t> const& select1_positions) {
+                        std::vector<size_t> const& rank_positions) {
   std::string opt =
       (optimize_one_or_dont_care(optimized_for)) ? "one_dont_care" : "zero";
   std::string find =
@@ -49,8 +47,6 @@ run_pasta_popcount_wide(size_t const bit_size,
   result.fill_percentage = fill_percentage;
   result.is_adversarial = is_adversarial;
   result.rank1_query_count = rank_positions.size();
-  result.select0_query_count = select0_positions.size();
-  result.select1_query_count = select1_positions.size();
 
   pasta::Timer timer;
   pasta::MemoryMonitor& mem_monitor = pasta::MemoryMonitor::instance();
@@ -70,19 +66,8 @@ run_pasta_popcount_wide(size_t const bit_size,
     [[maybe_unused]] size_t const result = rs.rank1(rank_positions[i]);
     PASTA_DO_NOT_OPTIMIZE(result);
   }
-  result.rank1_query_time = timer.get_and_sleep_and_reset(5);
+  result.rank1_query_time = timer.get_and_reset();
 
-  for (auto const pos : select0_positions) {
-    [[maybe_unused]] size_t const result = rs.select0(pos);
-    PASTA_DO_NOT_OPTIMIZE(result);
-  }
-  result.select0_query_time = timer.get_and_sleep_and_reset(5);
-
-  for (auto const pos : select1_positions) {
-    [[maybe_unused]] size_t const result = rs.select1(pos);
-    PASTA_DO_NOT_OPTIMIZE(result);
-  }
-  result.select1_query_time = timer.get_and_reset();
   auto const rs_query_mem_peak = mem_monitor.get_and_reset();
   result.rank_select_query_memory_peak = rs_query_mem_peak.cur_peak;
 

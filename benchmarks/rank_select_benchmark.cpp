@@ -287,9 +287,7 @@ private:
                 fill_percentage_,
                 adversarial_distribution_,
                 bv,
-                rank_positions,
-                select0_positions,
-                select1_positions);
+                rank_positions);
         std::cout << result << std::endl;
         std::this_thread::sleep_for(5s);
       }
@@ -301,9 +299,7 @@ private:
                 fill_percentage_,
                 adversarial_distribution_,
                 bv,
-                rank_positions,
-                select0_positions,
-                select1_positions);
+                rank_positions);
         std::cout << result << std::endl;
         std::this_thread::sleep_for(5s);
       }
