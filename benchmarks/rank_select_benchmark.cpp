@@ -24,6 +24,7 @@
 #include "pasta_popcount_flat.hpp"
 #include "pasta_popcount_wide.hpp"
 #include "poppy_rank_select.hpp"
+#include "poppy_rank_select_improved.hpp"
 #include "rank9_select.hpp"
 #include "sdsl_default_rank.hpp"
 #include "sdsl_default_select.hpp"
@@ -208,6 +209,17 @@ private:
                                                 bv,
                                                 rank_positions,
                                                 select1_positions);
+      std::cout << result << std::endl;
+      std::this_thread::sleep_for(5s);
+    }
+    if (filter_name_.empty() || filter_name_ == "poppy_rank_select_improved") {
+      auto const result =
+          run_poppy_rank_select_improved(bit_size_,
+                                         fill_percentage_,
+                                         adversarial_distribution_,
+                                         bv,
+                                         rank_positions,
+                                         select1_positions);
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
     }

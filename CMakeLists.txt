@@ -61,8 +61,14 @@ target_include_directories(sux_rank_select INTERFACE
 # Add cs-poppy rank and select data structure to the benchmark.
 add_library(poppy_rank_select
   ${CMAKE_CURRENT_SOURCE_DIR}/extlib/rankselect/bitmap.cc)
-target_include_directories(sux_rank_select INTERFACE
-  ${CMAKE_CURRENT_SOURCE_DIR}/extlib/rankselect)
+target_include_directories(poppy_rank_select PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/extlib/)
+
+# Add cs-poppy with better select support
+add_library(poppy_rank_select_improved
+  ${CMAKE_CURRENT_SOURCE_DIR}/extlib/rankselect2/bitmap.cc)
+target_include_directories(poppy_rank_select PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/extlib/)
 
 add_executable(rank_select_benchmark
   ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/rank_select_benchmark.cpp)
@@ -70,6 +76,7 @@ target_link_libraries(rank_select_benchmark
   sdsl
   sux_rank_select
   poppy_rank_select
+  poppy_rank_select_improved
   tlx
   pasta_bit_vector
   pasta_utils

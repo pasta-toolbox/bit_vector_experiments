@@ -27,18 +27,18 @@
 #include <pasta/utils/do_not_optimize.hpp>
 #include <pasta/utils/memory_monitor.hpp>
 #include <pasta/utils/timer.hpp>
-#include <rankselect/bitmap.h>
-#include <rankselect/shared.h>
+#include <rankselect2/bitmap.h>
+#include <rankselect2/shared.h>
 
 BenchmarkResult
-run_poppy_rank_select(size_t const bit_size,
-                      size_t const fill_percentage,
-                      bool const is_adversarial,
-                      pasta::BitVector const& bv,
-                      std::vector<size_t> const& rank_positions,
-                      std::vector<size_t> const& select1_positions) {
+run_poppy_rank_select_improved(size_t const bit_size,
+                               size_t const fill_percentage,
+                               bool const is_adversarial,
+                               pasta::BitVector const& bv,
+                               std::vector<size_t> const& rank_positions,
+                               std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
-  result.algo_name = "efficient-poppy-rank-select";
+  result.algo_name = "efficient-poppy-rank-select-improved";
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
   result.is_adversarial = is_adversarial;
