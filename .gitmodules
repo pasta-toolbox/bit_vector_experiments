@@ -12,10 +12,10 @@
 	url = https://github.com/pasta-toolbox-forks/tlx.git
 [submodule "extlib/utils"]
 	path = extlib/utils
-	url = git@github.com:pasta-toolbox/utils.git
+	url = https://github.com/pasta-toolbox/utils.git
 [submodule "extlib/bit_vector"]
 	path = extlib/bit_vector
-	url = git@github.com:pasta-toolbox/bit_vector.git
+	url = https://github.com:pasta-toolbox/bit_vector.git
 [submodule "extlib/rankselect2"]
 	path = extlib/rankselect2
 	url = https://github.com/pasta-toolbox-forks/rankselect2.git
