@@ -2,7 +2,7 @@
 
 now=$(date)
 folder_name=results_$(date +'%s')
-mkdir -p ${folder_name}
+cp -r template ${folder_name}
 
 # Name of every non-cs-poppy algorithm contained in the benchmark. We
 # use these names to filter the algorithms during the benchmark,
@@ -13,7 +13,7 @@ non_poppy_names="sdsl_rank_v5,sdsl_default_select,sdsl_default_rank,pasta_popcou
 # described above.
 poppy_names="poppy_rank_select_improved,poppy_rank_select"
 
-file_name=${folder_name}/benchmarks.txt
+file_name=${folder_name}/results.txt
 lscpu | tee -a ${file_name}
 
 # Run the benchmarks for our implementations and all other rank and
@@ -25,9 +25,9 @@ do
         for fill_rate in 10 50 90
         do
             echo "Running benchmark for size ${size}G and fill rate ${fill_rate}"
-            ./build/rank_select_benchmark -b ${size}K -q 100 -f ${fill_rate} -n ${non_poppy_names} | tee -a ${file_name}
+            ./build/rank_select_benchmark -b ${size}G -q 100 -f ${fill_rate} -n ${non_poppy_names} | tee -a ${file_name}
 	        echo "Running benchmark for size ${size}G and adversarial fill rate ${fill_rate}"
-            ./build/rank_select_benchmark -b ${size}K -q 100 -f ${fill_rate} -n ${non_poppy_names} -a | tee -a ${file_name}
+            ./build/rank_select_benchmark -b ${size}G -q 100 -f ${fill_rate} -n ${non_poppy_names} -a | tee -a ${file_name}
         done
     done
 done
@@ -41,9 +41,9 @@ do
         for fill_rate in 10 50 90
         do
             echo "Running benchmark for size ${size}G and fill rate ${fill_rate}"
-            ./build/rank_select_benchmark -b ${size}K -q 100 -f ${fill_rate} -n ${poppy_names} | tee -a ${file_name}
+            ./build/rank_select_benchmark -b ${size}G -q 100 -f ${fill_rate} -n ${poppy_names} | tee -a ${file_name}
 	        echo "Running benchmark for size ${size}G and adversarial fill rate ${fill_rate}"
-            ./build/rank_select_benchmark -b ${size}K -q 100 -f ${fill_rate} -n ${poppy_names} -a | tee -a ${file_name}
+            ./build/rank_select_benchmark -b ${size}G -q 100 -f ${fill_rate} -n ${poppy_names} -a | tee -a ${file_name}
         done
     done
 done
@@ -57,9 +57,9 @@ do
         for fill_rate in 10 50 90
         do
             echo "Running benchmark for size ${size}G and fill rate ${fill_rate}"
-            ./build/rank_select_benchmark -b ${size}K -q 100 -f ${fill_rate} -n ${poppy_names} | tee -a ${file_name}
+            ./build/rank_select_benchmark -b ${size}G -q 100 -f ${fill_rate} -n ${poppy_names} | tee -a ${file_name}
 	        echo "Running benchmark for size ${size}G and adversarial fill rate ${fill_rate}"
-            ./build/rank_select_benchmark -b ${size}K -q 100 -f ${fill_rate} -n ${poppy_names} -a | tee -a ${file_name}
+            ./build/rank_select_benchmark -b ${size}G -q 100 -f ${fill_rate} -n ${poppy_names} -a | tee -a ${file_name}
         done
     done
 done
