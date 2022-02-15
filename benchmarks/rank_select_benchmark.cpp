@@ -60,10 +60,7 @@ public:
         (filter_name_.find("sdsl") != std::string::npos)) {
       run_sdsl_benchmarks(gen);
     }
-    if (filter_name_.empty() ||
-        (filter_name_.find("sdsl") == std::string::npos)) {
-      run_non_sdsl_benchmarks(gen);
-    }
+    run_non_sdsl_benchmarks(gen);
   }
 
 private:
@@ -147,7 +144,8 @@ private:
               << std::endl;
     std::this_thread::sleep_for(5s);
 
-    if (filter_name_.empty() || filter_name_ == "rank9_select") {
+    if (filter_name_.empty() ||
+        filter_name_.find("rank9_select") != std::string::npos) {
       auto const result = run_rank9_select(bit_size_,
                                            fill_percentage_,
                                            adversarial_distribution_,
@@ -156,7 +154,8 @@ private:
                                            select1_positions);
       std::cout << result << std::endl;
     }
-    if (filter_name_.empty() || filter_name_ == "simple_select") {
+    if (filter_name_.empty() ||
+        filter_name_.find("simple_select") != std::string::npos) {
       {
         auto const result = run_simple_select<0>(bit_size_,
                                                  fill_percentage_,
@@ -194,7 +193,8 @@ private:
         std::this_thread::sleep_for(5s);
       }
     }
-    if (filter_name_.empty() || filter_name_ == "simple_select_half") {
+    if (filter_name_.empty() ||
+        filter_name_.find("simple_select_half") != std::string::npos) {
       auto const result = run_simple_select_half(bit_size_,
                                                  fill_percentage_,
                                                  adversarial_distribution_,
@@ -203,7 +203,8 @@ private:
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
     }
-    if (filter_name_.empty() || filter_name_ == "poppy_rank_select") {
+    if (filter_name_.empty() ||
+        filter_name_.find("poppy_rank_select") != std::string::npos) {
       auto const result = run_poppy_rank_select(bit_size_,
                                                 fill_percentage_,
                                                 adversarial_distribution_,
@@ -213,7 +214,8 @@ private:
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
     }
-    if (filter_name_.empty() || filter_name_ == "poppy_rank_select_improved") {
+    if (filter_name_.empty() ||
+        filter_name_.find("poppy_rank_select_improved") != std::string::npos) {
       auto const result =
           run_poppy_rank_select_improved(bit_size_,
                                          fill_percentage_,
@@ -224,7 +226,8 @@ private:
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
     }
-    if (filter_name_.empty() || filter_name_ == "pasta_popcount") {
+    if (filter_name_.empty() ||
+        filter_name_.find("pasta_popcount") != std::string::npos) {
       auto const result = run_pasta_popcount(bit_size_,
                                              fill_percentage_,
                                              adversarial_distribution_,
@@ -235,7 +238,8 @@ private:
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
     }
-    if (filter_name_.empty() || filter_name_ == "pasta_popcount_flat") {
+    if (filter_name_.empty() ||
+        filter_name_.find("pasta_popcount_flat") != std::string::npos) {
       {
         auto const result =
             run_pasta_popcount_flat<pasta::OptimizedFor::DONT_CARE,
@@ -279,23 +283,12 @@ private:
         std::this_thread::sleep_for(5s);
       }
     }
-    if (filter_name_.empty() || filter_name_ == "pasta_popcount_wide") {
+    if (filter_name_.empty() ||
+        filter_name_.find("pasta_popcount_wide") != std::string::npos) {
       {
         auto const result =
             run_pasta_popcount_wide<pasta::OptimizedFor::DONT_CARE,
                                     pasta::FindL2WideWith::LINEAR_SEARCH>(
-                bit_size_,
-                fill_percentage_,
-                adversarial_distribution_,
-                bv,
-                rank_positions);
-        std::cout << result << std::endl;
-        std::this_thread::sleep_for(5s);
-      }
-      {
-        auto const result =
-            run_pasta_popcount_wide<pasta::OptimizedFor::DONT_CARE,
-                                    pasta::FindL2WideWith::BINARY_SEARCH>(
                 bit_size_,
                 fill_percentage_,
                 adversarial_distribution_,
@@ -372,7 +365,8 @@ private:
 
     std::this_thread::sleep_for(5s);
 
-    if (filter_name_.empty() || filter_name_ == "sdsl_default_rank") {
+    if (filter_name_.empty() ||
+        filter_name_.find("sdsl_default_rank") != std::string::npos) {
       auto const result = run_sdsl_default_rank(bit_size_,
                                                 fill_percentage_,
                                                 adversarial_distribution_,
@@ -382,7 +376,8 @@ private:
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
     }
-    if (filter_name_.empty() || filter_name_ == "sdsl_default_select") {
+    if (filter_name_.empty() ||
+        filter_name_.find("sdsl_default_select") != std::string::npos) {
       auto const result = run_sdsl_default_select(bit_size_,
                                                   fill_percentage_,
                                                   adversarial_distribution_,
@@ -392,7 +387,8 @@ private:
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
     }
-    if (filter_name_.empty() || filter_name_ == "sdsl_rank_v5") {
+    if (filter_name_.empty() ||
+        filter_name_.find("sdsl_rank_v5") != std::string::npos) {
       auto const result = run_sdsl_rank_v5(bit_size_,
                                            fill_percentage_,
                                            adversarial_distribution_,
