@@ -34,7 +34,7 @@ BenchmarkResult
 run_pasta_popcount_flat(size_t const bit_size,
                         size_t const fill_percentage,
                         bool const is_adversarial,
-                        pasta::BitVector const& bv,
+                        pasta::BitVector& bv,
                         std::vector<size_t> const& rank_positions,
                         std::vector<size_t> const& select0_positions,
                         std::vector<size_t> const& select1_positions) {

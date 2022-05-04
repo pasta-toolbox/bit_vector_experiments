@@ -34,7 +34,7 @@ BenchmarkResult
 run_pasta_popcount_wide(size_t const bit_size,
                         size_t const fill_percentage,
                         bool const is_adversarial,
-                        pasta::BitVector const& bv,
+                        pasta::BitVector& bv,
                         std::vector<size_t> const& rank_positions) {
   std::string opt =
       (optimize_one_or_dont_care(optimized_for)) ? "one_dont_care" : "zero";

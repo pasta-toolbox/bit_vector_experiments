@@ -32,7 +32,7 @@ BenchmarkResult
 run_sdsl_default_select(size_t const bit_size,
                         size_t const fill_percentage,
                         bool const is_adversarial,
-                        sdsl::bit_vector const bv,
+                        sdsl::bit_vector const& bv,
                         std::vector<size_t> const& rank_positions,
                         std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;

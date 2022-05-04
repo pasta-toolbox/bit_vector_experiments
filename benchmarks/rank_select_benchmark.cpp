@@ -22,6 +22,7 @@
 #include "benchmark_result.hpp"
 #include "pasta_popcount.hpp"
 #include "pasta_popcount_flat.hpp"
+#include "pasta_popcount_flat_compressed.hpp"
 #include "pasta_popcount_wide.hpp"
 #include "poppy_rank_select.hpp"
 #include "poppy_rank_select_improved.hpp"
@@ -29,6 +30,10 @@
 #include "sdsl_default_rank.hpp"
 #include "sdsl_default_select.hpp"
 #include "sdsl_rank_v5.hpp"
+#include "sdsl_rrr_rank.hpp"
+#include "sdsl_rrr_select.hpp"
+#include "sdsl_sd_rank.hpp"
+#include "sdsl_sd_select.hpp"
 #include "simple_select.hpp"
 #include "simple_select_half.hpp"
 
@@ -298,6 +303,19 @@ private:
         std::this_thread::sleep_for(5s);
       }
     }
+    if (filter_name_.empty() ||
+        filter_name_.find("pasta_popcount_compressed_flat") != std::string::npos) {
+        auto const result =
+            run_pasta_popcount_flat_compressed(bit_size_,
+                                               fill_percentage_,
+                                               adversarial_distribution_,
+                                               bv,
+                                               rank_positions,
+                                               select0_positions,
+                                               select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+    }
   }
 
   void run_sdsl_benchmarks(std::mt19937 randomness) const {
@@ -397,6 +415,114 @@ private:
                                            select1_positions);
       std::cout << result << std::endl;
       std::this_thread::sleep_for(5s);
+    }
+    if (filter_name_.empty() ||
+        filter_name_.find("sdsl_rrr_rank") != std::string::npos) {
+      {
+        auto const result = run_sdsl_rrr_rank<15>(bit_size_,
+                                                  fill_percentage_,
+                                                  adversarial_distribution_,
+                                                  bv,
+                                                  rank_positions,
+                                                  select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+      {
+        auto const result = run_sdsl_rrr_rank<31>(bit_size_,
+                                                  fill_percentage_,
+                                                  adversarial_distribution_,
+                                                  bv,
+                                                  rank_positions,
+                                                  select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+      {
+        auto const result = run_sdsl_rrr_rank<63>(bit_size_,
+                                                  fill_percentage_,
+                                                  adversarial_distribution_,
+                                                  bv,
+                                                  rank_positions,
+                                                  select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+      {
+        auto const result = run_sdsl_rrr_rank<127>(bit_size_,
+                                                   fill_percentage_,
+                                                   adversarial_distribution_,
+                                                   bv,
+                                                   rank_positions,
+                                                   select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+    }
+    if (filter_name_.empty() ||
+        filter_name_.find("sdsl_rrr_select") != std::string::npos) {
+      {
+        auto const result = run_sdsl_rrr_select<15>(bit_size_,
+                                                    fill_percentage_,
+                                                    adversarial_distribution_,
+                                                    bv,
+                                                    rank_positions,
+                                                    select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+      {
+        auto const result = run_sdsl_rrr_select<31>(bit_size_,
+                                                    fill_percentage_,
+                                                    adversarial_distribution_,
+                                                    bv,
+                                                    rank_positions,
+                                                    select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+      {
+        auto const result = run_sdsl_rrr_select<63>(bit_size_,
+                                                    fill_percentage_,
+                                                    adversarial_distribution_,
+                                                    bv,
+                                                    rank_positions,
+                                                    select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+      {
+        auto const result = run_sdsl_rrr_select<127>(bit_size_,
+                                                     fill_percentage_,
+                                                     adversarial_distribution_,
+                                                     bv,
+                                                     rank_positions,
+                                                     select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+      }
+    }
+    if (filter_name_.empty() ||
+        filter_name_.find("sdsl_sd_rank") != std::string::npos) {
+        auto const result = run_sdsl_sd_rank(bit_size_,
+                                             fill_percentage_,
+                                             adversarial_distribution_,
+                                             bv,
+                                             rank_positions,
+                                             select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
+    }
+    if (filter_name_.empty() ||
+        filter_name_.find("sdsl_sd_select") != std::string::npos) {
+        auto const result = run_sdsl_sd_select(bit_size_,
+                                               fill_percentage_,
+                                               adversarial_distribution_,
+                                               bv,
+                                               rank_positions,
+                                               select1_positions);
+        std::cout << result << std::endl;
+        std::this_thread::sleep_for(5s);
     }
   }
 };

@@ -37,6 +37,7 @@ struct BenchmarkResult {
   size_t select1_query_count = 0;
   size_t select1_query_time = 0;
   size_t rank_select_query_memory_peak = 0;
+  size_t reported_compressed_bv_space = 0;
 };
 
 std::ostream& operator<<(std::ostream& os, BenchmarkResult const& br) {
@@ -52,7 +53,9 @@ std::ostream& operator<<(std::ostream& os, BenchmarkResult const& br) {
      << " select0_query_time=" << br.select0_query_time
      << " select1_query_count=" << br.select1_query_count
      << " select1_query_time=" << br.select1_query_time
-     << " rank_select_query_memory_peak=" << br.rank_select_query_memory_peak;
+     << " rank_select_query_memory_peak=" << br.rank_select_query_memory_peak
+     << " reported_compressed_bv_space=" << br.reported_compressed_bv_space;
+  
   return os;
 }
 

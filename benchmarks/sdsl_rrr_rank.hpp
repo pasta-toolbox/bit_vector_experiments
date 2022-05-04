@@ -1,5 +1,5 @@
 /*******************************************************************************
- * benchmarks/sdsl_with_v5.hpp
+ * benchmarks/sdsl_rrr_rank.hpp
  *
  * Copyright (C) 2022 Florian Kurpicz <florian@kurpicz.org>
  *
@@ -28,26 +28,31 @@
 #include <pasta/utils/timer.hpp>
 #include <sdsl/bit_vectors.hpp>
 
-BenchmarkResult run_sdsl_rank_v5(size_t const bit_size,
-                                 size_t const fill_percentage,
-                                 bool const is_adversarial,
-                                 sdsl::bit_vector const& bv,
-                                 std::vector<size_t> const& rank_positions,
-                                 std::vector<size_t> const& select1_positions) {
+template <size_t BlockSize>
+BenchmarkResult run_sdsl_rrr_rank(size_t const bit_size,
+                                  size_t const fill_percentage,
+                                  bool const is_adversarial,
+                                  sdsl::bit_vector const& bv,
+                                  std::vector<size_t> const& rank_positions,
+                                  std::vector<size_t> const& select1_positions) {
   BenchmarkResult result;
-  result.algo_name = "sdsl-rank-v5";
+  result.algo_name = "sdsl-rrr-rank-" + std::to_string(BlockSize);
   result.bit_size = bit_size;
   result.fill_percentage = fill_percentage;
   result.is_adversarial = is_adversarial;
   result.rank1_query_count = rank_positions.size();
 
+  typename sdsl::rrr_vector<BlockSize> rrrb(bv);
+
+  result.reported_compressed_bv_space = sdsl::size_in_bytes(rrrb);
+  
   pasta::Timer timer;
   pasta::MemoryMonitor& mem_monitor = pasta::MemoryMonitor::instance();
 
   timer.reset();
   mem_monitor.reset();
 
-  sdsl::rank_support_v5 bvr1(&bv);
+  typename sdsl::rrr_vector<BlockSize>::rank_1_type rank_rrrb(&rrrb);
 
   result.rank_select_construction_time = timer.get_and_sleep_and_reset(5);
   auto const rs_mem_peak = mem_monitor.get_and_reset();
@@ -55,7 +60,7 @@ BenchmarkResult run_sdsl_rank_v5(size_t const bit_size,
   timer.reset();
 
   for (size_t i = 0; i < rank_positions.size(); ++i) {
-    [[maybe_unused]] size_t const result = bvr1.rank(rank_positions[i]);
+    [[maybe_unused]] size_t const result = rank_rrrb(rank_positions[i]);
     PASTA_DO_NOT_OPTIMIZE(result);
   }
   result.rank1_query_time = timer.get_and_reset();
