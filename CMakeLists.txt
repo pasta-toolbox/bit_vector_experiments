@@ -82,4 +82,10 @@ target_link_libraries(rank_select_benchmark
   pasta_utils
   pasta_memory_monitor)
 
+add_executable(bit_vector_to_std_vector
+  ${CMAKE_CURRENT_SOURCE_DIR}/utils/bit_vector_to_std_vector.cpp)
+target_link_libraries(bit_vector_to_std_vector
+  tlx
+  pasta_bit_vector)
+
 ################################################################################
